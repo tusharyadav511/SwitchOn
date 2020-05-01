@@ -6,10 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradent"
-    tools:context=".ui.login.LoginActivityWithEmail">
+
+    tools:context=".ui.login.LoginWithEmailActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbarLogin"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/browser_actions_divider_color"
@@ -116,6 +117,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarLogin"
         app:srcCompat="@drawable/logo_transperent_background" />
 </androidx.constraintlayout.widget.ConstraintLayout>

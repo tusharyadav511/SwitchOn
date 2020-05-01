@@ -1,6 +1,9 @@
 package com.switchonkannada.switchon.ui.login
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
+import android.graphics.Color
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -10,31 +13,40 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 
 import com.switchonkannada.switchon.R
 
-class LoginActivityWithEmail : AppCompatActivity() {
+class LoginWithEmailActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_login_with_email)
 
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
         val login = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
+        val toolbar = findViewById<Toolbar>(R.id.toolbarLogin)
 
-        loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.toolbar_back)
+        supportActionBar?.title = "Log In with Email"
+        toolbar.setTitleTextColor(Color.WHITE)
+
+        loginViewModel = ViewModelProviders.of(this)
             .get(LoginViewModel::class.java)
 
-        loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
+        loginViewModel.loginFormState.observe(this@LoginWithEmailActivity, Observer {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
@@ -48,7 +60,7 @@ class LoginActivityWithEmail : AppCompatActivity() {
             }
         })
 
-        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
+        loginViewModel.loginResult.observe(this@LoginWithEmailActivity, Observer {
             val loginResult = it ?: return@Observer
 
             loading.visibility = View.GONE
@@ -61,7 +73,6 @@ class LoginActivityWithEmail : AppCompatActivity() {
             setResult(Activity.RESULT_OK)
 
             //Complete and destroy login activity once successful
-            finish()
         })
 
         username.afterTextChanged {
@@ -82,36 +93,55 @@ class LoginActivityWithEmail : AppCompatActivity() {
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        loginViewModel.login(
-                            username.text.toString(),
-                            password.text.toString()
-                        )
+                        if(username.text.toString() != "" && password.text.toString() != ""){
+                            loading.visibility = View.VISIBLE
+                            loginViewModel.login(
+                                username.text.toString(),
+                                password.text.toString()
+                            )
+                        }
                 }
                 false
             }
 
             login.setOnClickListener {
+                hideKeyBoard()
                 loading.visibility = View.VISIBLE
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
         // TODO : initiate successful logged in experience
         Toast.makeText(
             applicationContext,
-            "$welcome $displayName",
+            "$welcome",
             Toast.LENGTH_LONG
         ).show()
     }
 
-    private fun showLoginFailed(@StringRes errorString: Int) {
-        Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+    private fun showLoginFailed(errorString: String) {
+        // Toast.makeText(applicationContext, errorString, Toast.LENGTH_LONG).show()
+        AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(errorString).setPositiveButton("Ok" , null).show()
+    }
+
+    fun hideKeyBoard(){
+        val inputManager: InputMethodManager? =
+            this?.getSystemService(Context.INPUT_METHOD_SERVICE) as?
+                    InputMethodManager
+        // check if no view has focus:
+        val v = this?.currentFocus ?: return
+        inputManager?.hideSoftInputFromWindow(v.windowToken, 0)
     }
 }
+
 
 /**
  * Extension function to simplify setting an afterTextChanged action to EditText components.

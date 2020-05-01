@@ -10,8 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.login.LoginActivityWithEmail"
-            android:label="@string/title_activity_login_with_email"></activity>
+            android:name=".ui.login.LoginWithEmailActivity"
+            android:label="@string/title_activity_login_with_email"/>
         <activity android:name=".logInOption" />
         <activity android:name=".MainActivity">
             <intent-filter>
