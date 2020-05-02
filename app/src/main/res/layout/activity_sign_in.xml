@@ -53,7 +53,7 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/enterName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
@@ -67,10 +67,9 @@
                 android:selectAllOnFocus="true" />
 
             <EditText
-                android:id="@+id/editText2"
+                android:id="@+id/enterEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:background="@drawable/button_background"
                 android:ems="10"
                 android:hint="Your Email"
@@ -82,7 +81,7 @@
                 android:selectAllOnFocus="true" />
 
             <EditText
-                android:id="@+id/editText3"
+                android:id="@+id/enterPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
@@ -96,7 +95,7 @@
                 android:selectAllOnFocus="true" />
 
             <EditText
-                android:id="@+id/editText4"
+                android:id="@+id/verifyPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_background"
@@ -110,7 +109,7 @@
                 android:selectAllOnFocus="true" />
 
             <ProgressBar
-                android:id="@+id/progressBar2"
+                android:id="@+id/signUpLoading"
                 style="@android:style/Widget.Holo.Light.ProgressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -119,7 +118,7 @@
                 android:visibility="gone" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_background"

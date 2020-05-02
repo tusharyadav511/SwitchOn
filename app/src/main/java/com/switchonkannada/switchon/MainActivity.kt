@@ -17,11 +17,11 @@ class MainActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
 
         Handler().postDelayed({
-            if(mAuth.currentUser == null){
+
                 val intent = Intent(this , logInOption::class.java)
                 startActivity(intent)
                 finish()
-            }
+
         },2000)
     }
 }

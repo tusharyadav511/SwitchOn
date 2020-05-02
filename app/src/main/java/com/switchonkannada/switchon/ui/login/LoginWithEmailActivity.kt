@@ -61,6 +61,8 @@ class LoginWithEmailActivity : AppCompatActivity() {
             }
         })
 
+
+
         loginViewModel.loginResult.observe(this@LoginWithEmailActivity, Observer {
             val loginResult = it ?: return@Observer
 
@@ -76,11 +78,13 @@ class LoginWithEmailActivity : AppCompatActivity() {
             //Complete and destroy login activity once successful
         })
 
-        username.afterTextChanged {
-            loginViewModel.loginDataChanged(
-                username.text.toString(),
-                password.text.toString()
-            )
+        username.apply {
+            afterTextChanged {
+                loginViewModel.loginDataChanged(
+                    username.text.toString(),
+                    password.text.toString()
+                )
+            }
         }
 
         password.apply {
