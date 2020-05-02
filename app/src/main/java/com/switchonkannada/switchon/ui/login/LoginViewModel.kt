@@ -28,7 +28,6 @@ class LoginViewModel() : ViewModel() {
                     LoginResult(success = LoggedInUserView(Message = "Successful"))
             }else{
                 _loginResult.value = LoginResult(error = it.exception?.message)
-
             }
         }
     }

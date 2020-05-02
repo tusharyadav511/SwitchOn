@@ -49,6 +49,7 @@ class LoginWithEmailActivity : AppCompatActivity() {
         loginViewModel.loginFormState.observe(this@LoginWithEmailActivity, Observer {
             val loginState = it ?: return@Observer
 
+
             // disable login button unless both username / password is valid
             login.isEnabled = loginState.isDataValid
 
