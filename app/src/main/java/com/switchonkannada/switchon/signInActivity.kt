@@ -48,6 +48,7 @@ class signInActivity : AppCompatActivity() {
         register = findViewById(R.id.register)
 
 
+
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.toolbar_back)

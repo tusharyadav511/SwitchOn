@@ -12,4 +12,7 @@
     <string name="incorrect_password_verification">Passwords do not match</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_invalid_email">This email address is invalid</string>
+    <string name="facebook_app_id">2475122279254189</string>
+    <string name="fb_login_protocol_scheme">fb2475122279254189</string>
+
 </resources>

@@ -117,7 +117,7 @@
         android:drawableLeft="@drawable/facebook_icon"
         android:elevation="20dp"
         android:padding="10dp"
-        android:text="Log in with Facebook"
+        android:text="Sign in with Facebook"
         android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
