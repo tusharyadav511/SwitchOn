@@ -33,7 +33,7 @@ class logInOption : AppCompatActivity() {
         }
 
         register.setOnClickListener {
-            val intent = Intent(this , signInActivity :: class.java)
+            val intent = Intent(this , SignInOption :: class.java)
             startActivity(intent)        }
 
     }

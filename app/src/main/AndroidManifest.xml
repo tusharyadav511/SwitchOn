@@ -9,13 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".signInActivity"></activity>
+        <activity android:name=".SignInOption"></activity>
+        <activity android:name=".signInActivity" />
         <activity
             android:name=".ui.login.LoginWithEmailActivity"
             android:label="@string/title_activity_login_with_email" />
-
         <activity android:name=".logInOption" />
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
