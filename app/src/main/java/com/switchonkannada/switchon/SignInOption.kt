@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.facebook.AccessToken
-import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
+import com.facebook.*
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -30,7 +27,6 @@ class SignInOption : AppCompatActivity() {
     lateinit var signInWithFacebook:Button
     lateinit var mAuth: FirebaseAuth
     lateinit var callbackManager: CallbackManager
-    lateinit var gso:GoogleSignInOptions
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -39,17 +35,19 @@ class SignInOption : AppCompatActivity() {
         callbackManager.onActivityResult(requestCode, resultCode, data)
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == 101) {
+        if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
+                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(account.email).setPositiveButton("Ok" , null).show()
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 AlertDialog.Builder(this@SignInOption , R.style.CustomDialogTheme).setTitle("Error").setMessage(e.message).setPositiveButton("Ok" , null).show()
 
             }
         }
+
     }
 
 
@@ -71,7 +69,10 @@ class SignInOption : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+
+
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
@@ -93,15 +94,39 @@ class SignInOption : AppCompatActivity() {
             signInWithFacebook()
         }
     }
+
+
+
+
+
     private fun signInWithGoogle() {
         val signInIntent = mgoogleSignInClient.signInIntent
-        startActivityForResult(signInIntent, 101)
+        startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
     private fun signInWithFacebook(){
         LoginManager.getInstance().logInWithReadPermissions(this , Arrays.asList("email", "public_profile"))
         LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<com.facebook.login.LoginResult> {
             override fun onSuccess(loginResult: com.facebook.login.LoginResult) {
+
+                val request = GraphRequest.newMeRequest(
+                    loginResult.accessToken
+                ) { me, response ->
+                    if (response.error != null) {
+                        // handle error
+                    } else {
+                        val user_lastname = me.optString("last_name")
+                        val user_firstname = me.optString("first_name")
+                        val user_email = response.jsonObject.optString("email")
+                        AlertDialog.Builder(this@SignInOption , R.style.CustomDialogTheme).setTitle("Success").setMessage(user_email).setPositiveButton("Ok" , null).show()
+
+                    }
+                }
+
+                val parameters = Bundle()
+                parameters.putString("fields", "last_name,first_name,email")
+                request.parameters = parameters
+                request.executeAsync()
                 // Log.d(FragmentActivity."TAG", "facebook:onSuccess:$loginResult")
                 handleFacebookAccessToken(loginResult.accessToken)
             }
@@ -116,15 +141,21 @@ class SignInOption : AppCompatActivity() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken,null)
+        val credential = GoogleAuthProvider.getCredential(idToken , null)
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     val user = mAuth.currentUser
-                    AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
-                    // TODO : initiate successful logged in experience
+                  //  AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
+                    val newuser =
+                        task.result!!.additionalUserInfo!!.isNewUser
+                    if (newuser) {
+                        //Do Stuffs for new user
+                       // AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
+                     //   FirebaseDatabase.getInstance().reference.child("currentUsers").child(user?.uid!!).setValue(user?.uid)
 
+                    }
                 } else {
                     AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
                 }
@@ -134,13 +165,14 @@ class SignInOption : AppCompatActivity() {
     }
 
     private fun handleFacebookAccessToken(token: AccessToken) {
+
         val credential = FacebookAuthProvider.getCredential(token.token)
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     val user = mAuth.currentUser
-                    AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
+                  //  AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
                     // TODO : initiate successful logged in experience
                 } else {
                     AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
@@ -152,5 +184,10 @@ class SignInOption : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    companion object {
+        private const val TAG = "GoogleActivity"
+        private const val RC_SIGN_IN = 9001
     }
 }
