@@ -4,7 +4,9 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -29,6 +31,7 @@ class SignInOption : AppCompatActivity() {
     lateinit var signInWithFacebook:Button
     lateinit var mAuth: FirebaseAuth
     lateinit var callbackManager: CallbackManager
+    lateinit var progress:ProgressBar
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -59,6 +62,7 @@ class SignInOption : AppCompatActivity() {
         signInWithEmail = findViewById(R.id.emailSignIn)
         signInWithGoogle = findViewById(R.id.googleSignIn)
         signInWithFacebook = findViewById(R.id.facebookSignIn)
+        progress = findViewById(R.id.signInProgess)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -136,6 +140,9 @@ class SignInOption : AppCompatActivity() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String , email:String) {
+
+        progress.visibility = View.VISIBLE
+
         mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener {
 
             val isNewUser: Boolean = it.result?.signInMethods?.isEmpty()!!
@@ -151,7 +158,7 @@ class SignInOption : AppCompatActivity() {
                             if (newuser) {
                                 // TODO : initiate successful logged in experience
                                 AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user!!.uid).setPositiveButton("Ok" , null).show()
-
+                                finish()
                             }
                         } else {
                             AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
@@ -162,7 +169,11 @@ class SignInOption : AppCompatActivity() {
                 AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("The email address is already in use by another account.").setPositiveButton("Ok" , null).show()
                 mgoogleSignInClient.signOut()
             }
+
+            progress.visibility = View.GONE
+
         }
+
     }
 
     private fun handleFacebookAccessToken(token: AccessToken , emailFacebook: String) {
