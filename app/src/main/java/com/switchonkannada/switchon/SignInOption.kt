@@ -3,7 +3,9 @@ package com.switchonkannada.switchon
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.facebook.*
@@ -33,18 +35,14 @@ class SignInOption : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         callbackManager.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
-                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(account.email).setPositiveButton("Ok" , null).show()
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                AlertDialog.Builder(this@SignInOption , R.style.CustomDialogTheme).setTitle("Error").setMessage(e.message).setPositiveButton("Ok" , null).show()
-
+                firebaseAuthWithGoogle(account.idToken!! , account.email!!)
+            } catch (e: Exception) {
+                Toast.makeText(this , e.message , Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -113,12 +111,11 @@ class SignInOption : AppCompatActivity() {
                     loginResult.accessToken
                 ) { me, response ->
                     if (response.error != null) {
-                        // handle error
+                        AlertDialog.Builder(this@SignInOption , R.style.CustomDialogTheme).setTitle("Error").setMessage(response.error.errorMessage).setPositiveButton("Ok" , null).show()
+
                     } else {
-                        val user_lastname = me.optString("last_name")
-                        val user_firstname = me.optString("first_name")
                         val user_email = response.jsonObject.optString("email")
-                        AlertDialog.Builder(this@SignInOption , R.style.CustomDialogTheme).setTitle("Success").setMessage(user_email).setPositiveButton("Ok" , null).show()
+                        handleFacebookAccessToken(loginResult.accessToken , user_email)
 
                     }
                 }
@@ -127,8 +124,6 @@ class SignInOption : AppCompatActivity() {
                 parameters.putString("fields", "last_name,first_name,email")
                 request.parameters = parameters
                 request.executeAsync()
-                // Log.d(FragmentActivity."TAG", "facebook:onSuccess:$loginResult")
-                handleFacebookAccessToken(loginResult.accessToken)
             }
             override fun onCancel() {
                 //  Log.d(FragmentActivity.TAG, "facebook:onCancel")
@@ -140,44 +135,62 @@ class SignInOption : AppCompatActivity() {
         })
     }
 
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken , null)
-        mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    val user = mAuth.currentUser
-                  //  AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
-                    val newuser =
-                        task.result!!.additionalUserInfo!!.isNewUser
-                    if (newuser) {
-                        //Do Stuffs for new user
-                       // AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
-                     //   FirebaseDatabase.getInstance().reference.child("currentUsers").child(user?.uid!!).setValue(user?.uid)
+    private fun firebaseAuthWithGoogle(idToken: String , email:String) {
+        mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener {
 
+            val isNewUser: Boolean = it.result?.signInMethods?.isEmpty()!!
+
+            if (isNewUser) {
+                Log.e("TAG", "Is New User!")
+                val credential = GoogleAuthProvider.getCredential(idToken , null)
+                mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            val user = mAuth.currentUser
+                            val newuser = task.result!!.additionalUserInfo!!.isNewUser
+                            if (newuser) {
+                                // TODO : initiate successful logged in experience
+                                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user!!.uid).setPositiveButton("Ok" , null).show()
+
+                            }
+                        } else {
+                            AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
+                        } // ...
                     }
-                } else {
-                    AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
-                }
-
-                // ...
+            } else {
+                Log.e("TAG", "Is Old User!")
+                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("The email address is already in use by another account.").setPositiveButton("Ok" , null).show()
+                mgoogleSignInClient.signOut()
             }
+        }
     }
 
-    private fun handleFacebookAccessToken(token: AccessToken) {
-
+    private fun handleFacebookAccessToken(token: AccessToken , emailFacebook: String) {
         val credential = FacebookAuthProvider.getCredential(token.token)
-        mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    val user = mAuth.currentUser
-                  //  AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
-                    // TODO : initiate successful logged in experience
-                } else {
-                    AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
-                }
+        mAuth.fetchSignInMethodsForEmail(emailFacebook).addOnCompleteListener {
+            val isNewUser: Boolean = it.result?.signInMethods?.isEmpty()!!
+            if (isNewUser) {
+                Log.e("TAG", "Is New User!")
+                mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            val user = mAuth.currentUser
+                            val newuser = task.result!!.additionalUserInfo!!.isNewUser
+                            if (newuser){
+                                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
+                                // TODO : initiate successful logged in experience
+                            }
+                        } else {
+                            AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
+                        }
+                    }
+            } else {
+                Log.e("TAG", "Is Old User!")
+                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("The email address is already in use by another account.").setPositiveButton("Ok" , null).show()
+                LoginManager.getInstance().logOut()
             }
+        }
     }
 
 
