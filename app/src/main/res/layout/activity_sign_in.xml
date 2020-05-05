@@ -7,28 +7,20 @@
     android:background="@drawable/background_gradent"
     tools:context=".signInActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarSignIn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarSignIn">
+        app:layout_constraintTop_toBottomOf="@+id/backFloationRegister">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView3"
@@ -70,12 +62,12 @@
                 android:id="@+id/enterEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_background"
-                android:ems="10"
-                android:hint="Your Email"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="8dp"
+                android:background="@drawable/button_background"
+                android:ems="10"
+                android:hint="Your Email"
                 android:inputType="textEmailAddress"
                 android:padding="10dp"
                 android:selectAllOnFocus="true" />
@@ -98,12 +90,12 @@
                 android:id="@+id/verifyPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_background"
-                android:ems="10"
-                android:hint="Re-type Password"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="8dp"
+                android:background="@drawable/button_background"
+                android:ems="10"
+                android:hint="Re-type Password"
                 android:inputType="textPassword"
                 android:padding="10dp"
                 android:selectAllOnFocus="true" />
@@ -121,17 +113,30 @@
                 android:id="@+id/register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_background"
-                android:backgroundTint="#08BC11"
-                android:elevation="20dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="8dp"
+                android:background="@drawable/button_background"
+                android:backgroundTint="#08BC11"
+                android:elevation="20dp"
                 android:enabled="false"
                 android:text="Register"
                 android:textColor="#ffffff"
                 android:textSize="18sp" />
         </LinearLayout>
     </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/backFloationRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        app:backgroundTint="?attr/colorControlHighlight"
+        app:elevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/toolbar_back" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -57,6 +57,8 @@ class logInOption : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in_option)
 
+        supportActionBar?.hide()
+
         emailLogin = findViewById(R.id.emailLogin)
         googleLogin = findViewById(R.id.googleLogin)
         facebookLogin = findViewById(R.id.facebookLogin)
@@ -159,8 +161,7 @@ class logInOption : AppCompatActivity() {
                             val newUser = it.result!!.additionalUserInfo!!.isNewUser
                             
                             if (!newUser) {
-                                // TODO : initiate successful logged in experience
-                                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user!!.uid).setPositiveButton("Ok" , null).show()
+                                nextScreen()
                             }
                         } else {
                             AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(it.exception?.message).setPositiveButton("Ok" , null).show()
@@ -188,8 +189,8 @@ class logInOption : AppCompatActivity() {
                             val user = mAuth.currentUser
                             val newuser = task.result!!.additionalUserInfo!!.isNewUser
                             if (!newuser){
-                                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
-                                // TODO : initiate successful logged in experience
+                                nextScreen()
+
 
                             }
                         } else {
@@ -202,6 +203,12 @@ class logInOption : AppCompatActivity() {
                 LoginManager.getInstance().logOut()
             }
         }
+    }
+
+    fun nextScreen(){
+        val intent = Intent(this , bottomNav :: class.java)
+        startActivity(intent)
+        finish()
     }
 
 

@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.switchonkannada.switchon.ui.login.LoggedInUserView
 import com.switchonkannada.switchon.ui.login.afterTextChanged
 import com.switchonkannada.switchon.ui.signIn.SignInViewModel
@@ -27,32 +28,32 @@ class signInActivity : AppCompatActivity() {
 
     lateinit var signInViewMode: SignInViewModel
 
-    lateinit var toolbar: Toolbar
     lateinit var name:EditText
     lateinit var email:EditText
     lateinit var password:EditText
     lateinit var verifyPassword:EditText
     lateinit var loading:ProgressBar
     lateinit var register:Button
+    lateinit var back:FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
-        toolbar = findViewById(R.id.toolbarSignIn)
         name = findViewById(R.id.enterName)
         email = findViewById(R.id.enterEmail)
         password = findViewById(R.id.enterPassword)
         verifyPassword = findViewById(R.id.verifyPassword)
         loading = findViewById(R.id.signUpLoading)
         register = findViewById(R.id.register)
+        back = findViewById(R.id.backFloationRegister)
 
 
+        back.setOnClickListener {
+            onBackPressed()
+        }
 
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.toolbar_back)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.hide()
 
         signInViewMode = ViewModelProviders.of(this).get(SignInViewModel ::class.java)
 

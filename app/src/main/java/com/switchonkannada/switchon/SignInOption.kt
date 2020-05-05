@@ -16,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -24,7 +25,6 @@ import java.util.*
 
 class SignInOption : AppCompatActivity() {
 
-    lateinit var toolbar: Toolbar
     lateinit var signInWithEmail:Button
     lateinit var signInWithGoogle:Button
     lateinit var mgoogleSignInClient: GoogleSignInClient
@@ -32,6 +32,7 @@ class SignInOption : AppCompatActivity() {
     lateinit var mAuth: FirebaseAuth
     lateinit var callbackManager: CallbackManager
     lateinit var progress:ProgressBar
+    lateinit var back:FloatingActionButton
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -58,16 +59,17 @@ class SignInOption : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in_option)
 
-        toolbar = findViewById(R.id.toolbarSignInOption)
         signInWithEmail = findViewById(R.id.emailSignIn)
         signInWithGoogle = findViewById(R.id.googleSignIn)
         signInWithFacebook = findViewById(R.id.facebookSignIn)
         progress = findViewById(R.id.signInProgess)
+        back = findViewById(R.id.backFloatingSignOption)
 
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.toolbar_back)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        back.setOnClickListener {
+            onBackPressed()
+        }
+
+        supportActionBar?.hide()
 
         mAuth = FirebaseAuth.getInstance()
 

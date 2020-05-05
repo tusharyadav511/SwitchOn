@@ -9,14 +9,39 @@
 
     tools:context=".ui.login.LoginWithEmailActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarLogin"
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/browser_actions_divider_color"
+        android:layout_height="?android:attr/actionBarSize"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/backFloationLogOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:backgroundTint="?attr/colorControlHighlight"
+            app:elevation="0dp"
+            app:srcCompat="@drawable/toolbar_back" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Log In with Email"
+            android:textAlignment="textStart"
+            android:textColor="#ffffff"
+            android:textSize="22sp" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/username"
@@ -113,10 +138,11 @@
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="150dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarLogin"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:srcCompat="@drawable/logo_transperent_background" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -19,6 +20,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 import com.switchonkannada.switchon.R
 
@@ -35,13 +37,13 @@ class LoginWithEmailActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password)
         val login = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
-        val toolbar = findViewById<Toolbar>(R.id.toolbarLogin)
+        val backButton = findViewById<FloatingActionButton>(R.id.backFloationLogOption)
 
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.toolbar_back)
-        supportActionBar?.title = "Log In with Email"
-        toolbar.setTitleTextColor(Color.WHITE)
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
+
+        supportActionBar?.hide()
 
         loginViewModel = ViewModelProviders.of(this)
             .get(LoginViewModel::class.java)
