@@ -20,6 +20,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import java.util.*
 
 
@@ -157,10 +160,18 @@ class SignInOption : AppCompatActivity() {
                         if (task.isSuccessful) {
                             val user = mAuth.currentUser
                             val newuser = task.result!!.additionalUserInfo!!.isNewUser
-                            if (newuser) {
-                                // TODO : initiate successful logged in experience
-                                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user!!.uid).setPositiveButton("Ok" , null).show()
-                                finish()
+                            val uid = user?.uid
+                            val imageUrl = user?.photoUrl.toString()
+                            val name = user?.displayName
+                            val email = user?.email
+                            if (newuser){
+                                if (name != null && email != null && uid != null && imageUrl != null) {
+                                    nextScreen(imageUrl , name , email , uid)
+                                } else {
+                                    AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("Something is wrong with your profile details").setPositiveButton("Ok" , null).show()
+                                    mgoogleSignInClient.signOut()
+                                    mAuth.signOut()
+                                }
                             }
                         } else {
                             AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
@@ -190,9 +201,18 @@ class SignInOption : AppCompatActivity() {
                             // Sign in success, update UI with the signed-in user's information
                             val user = mAuth.currentUser
                             val newuser = task.result!!.additionalUserInfo!!.isNewUser
+                            val uid = user?.uid
+                            val imageUrl = user?.photoUrl.toString()
+                            val name = user?.displayName
+                            val email = user?.email
                             if (newuser){
-                                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage(user?.uid).setPositiveButton("Ok" , null).show()
-                                // TODO : initiate successful logged in experience
+                                if (name != null && email != null && uid != null && imageUrl != null) {
+                                    nextScreen(imageUrl , name , email , uid)
+                                } else {
+                                    AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("Something is wrong with your profile details").setPositiveButton("Ok" , null).show()
+                                    LoginManager.getInstance().logOut()
+                                    mAuth.signOut()
+                                }
                             }
                         } else {
                             AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
@@ -202,6 +222,22 @@ class SignInOption : AppCompatActivity() {
                 Log.e("TAG", "Is Old User!")
                 AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("The email address is already in use by another account.").setPositiveButton("Ok" , null).show()
                 LoginManager.getInstance().logOut()
+            }
+        }
+    }
+
+    private fun nextScreen(imageUrl: String , name:String , email:String , uid:String){
+
+        val userData = hashMapOf("Name" to name , "Email" to email , "ProfileImage" to imageUrl , "uid" to uid)
+        val intent = Intent(this , bottomNav :: class.java)
+
+        Firebase.firestore.collection("users").document(uid).set(userData).addOnCompleteListener {
+            if (it.isSuccessful){
+                FirebaseDatabase.getInstance().reference.child("users").child(uid).setValue(userData)
+                startActivity(intent)
+                finish()
+            }else{
+                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(it.exception?.message).setPositiveButton("Ok" , null).show()
             }
         }
     }

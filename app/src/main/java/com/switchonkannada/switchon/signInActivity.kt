@@ -3,6 +3,7 @@ package com.switchonkannada.switchon
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -66,7 +67,7 @@ class signInActivity : AppCompatActivity() {
                 showLoginFailed(signInResult.error)
             }
             if(signInResult.success != null){
-                updateUiWithUser()
+                updateUiWithUser(signInResult.success)
             }
             setResult(Activity.RESULT_OK)
         })
@@ -136,9 +137,11 @@ class signInActivity : AppCompatActivity() {
 
 
 
-    private fun updateUiWithUser() {
-        AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Success").setMessage("Nooo").setPositiveButton("Ok" , null).show()
-        // TODO : initiate successful logged in experience
+    private fun updateUiWithUser(text:String) {
+        Toast.makeText(this , text , Toast.LENGTH_LONG).show()
+        val intent = Intent(this , bottomNav :: class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun showLoginFailed(errorString: String) {

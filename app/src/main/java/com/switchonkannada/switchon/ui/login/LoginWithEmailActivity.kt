@@ -3,6 +3,7 @@ package com.switchonkannada.switchon.ui.login
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.lifecycle.Observer
@@ -23,6 +24,7 @@ import androidx.appcompat.widget.Toolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 import com.switchonkannada.switchon.R
+import com.switchonkannada.switchon.bottomNav
 
 class LoginWithEmailActivity : AppCompatActivity() {
 
@@ -73,7 +75,7 @@ class LoginWithEmailActivity : AppCompatActivity() {
                 showLoginFailed(loginResult.error)
             }
             if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
+                updateUiWithUser()
             }
             setResult(Activity.RESULT_OK)
 
@@ -124,14 +126,16 @@ class LoginWithEmailActivity : AppCompatActivity() {
         return true
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
+    private fun updateUiWithUser() {
         val welcome = getString(R.string.welcome)
-        // TODO : initiate successful logged in experience
+        val intent = Intent(this , bottomNav :: class.java)
         Toast.makeText(
             applicationContext,
             "$welcome",
             Toast.LENGTH_LONG
         ).show()
+        startActivity(intent)
+        finish()
     }
 
     private fun showLoginFailed(errorString: String) {

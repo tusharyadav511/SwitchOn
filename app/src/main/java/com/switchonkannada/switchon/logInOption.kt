@@ -19,6 +19,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.switchonkannada.switchon.ui.login.LoginWithEmailActivity
 import kotlinx.android.synthetic.main.activity_log_in_option.*
 import java.util.*
@@ -159,9 +162,18 @@ class logInOption : AppCompatActivity() {
                         if (it.isSuccessful) {
                             val user = mAuth.currentUser
                             val newUser = it.result!!.additionalUserInfo!!.isNewUser
-                            
+                            val imageUrl = user?.photoUrl.toString()
+                            val name = user?.displayName
+                            val email = user?.email
+                            val uid = user?.uid
                             if (!newUser) {
-                                nextScreen()
+                                if (imageUrl != null && name != null && email != null && uid != null){
+                                    nextScreen(imageUrl , name , email , uid)
+                                }else {
+                                    AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("Something is wrong with your profile details").setPositiveButton("Ok" , null).show()
+                                    mgoogleSignInClient.signOut()
+                                    mAuth.signOut()
+                                }
                             }
                         } else {
                             AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(it.exception?.message).setPositiveButton("Ok" , null).show()
@@ -188,10 +200,18 @@ class logInOption : AppCompatActivity() {
                             // Sign in success, update UI with the signed-in user's information
                             val user = mAuth.currentUser
                             val newuser = task.result!!.additionalUserInfo!!.isNewUser
+                            val name = user?.displayName
+                            val email = user?.email
+                            val uid = user?.uid
+                            val imageUrl = user?.photoUrl.toString()
                             if (!newuser){
-                                nextScreen()
-
-
+                                if (name != null && email != null && uid != null && imageUrl != null) {
+                                    nextScreen(imageUrl , name , email , uid)
+                                } else {
+                                    AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("Something is wrong with your profile details").setPositiveButton("Ok" , null).show()
+                                    LoginManager.getInstance().logOut()
+                                    mAuth.signOut()
+                                }
                             }
                         } else {
                             AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
@@ -205,10 +225,20 @@ class logInOption : AppCompatActivity() {
         }
     }
 
-    fun nextScreen(){
+    private fun nextScreen(imageUrl: String , name:String , email:String , uid:String){
+
+        val userData = hashMapOf("Name" to name , "Email" to email , "ProfileImage" to imageUrl , "uid" to uid)
         val intent = Intent(this , bottomNav :: class.java)
-        startActivity(intent)
-        finish()
+
+        Firebase.firestore.collection("users").document(uid).set(userData).addOnCompleteListener {
+            if (it.isSuccessful){
+                FirebaseDatabase.getInstance().reference.child("users").child(uid).setValue(userData)
+                startActivity(intent)
+                finish()
+            }else{
+                AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(it.exception?.message).setPositiveButton("Ok" , null).show()
+            }
+        }
     }
 
 

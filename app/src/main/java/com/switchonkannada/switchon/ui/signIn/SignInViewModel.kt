@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.switchonkannada.switchon.R
 
 class SignInViewModel(): ViewModel() {
@@ -31,10 +33,17 @@ class SignInViewModel(): ViewModel() {
             auth.createUserWithEmailAndPassword(email , verifyPassword).addOnCompleteListener {
                 if (it.isSuccessful){
                     val currentUser = it.result!!.user!!.uid
-                    // TODO : add data to Cloud Firestore also
+                    val imageUrl = "https://firebasestorage.googleapis.com/v0/b/switch-on-39001.appspot.com/o/DefaultProfileIcon%20%2FdefaultProfileIcon.png?alt=media&token=d2e5ff1b-36d3-4ba2-9447-254c4dcc1300"
+                    val map:Map<String , String> = mapOf( "Name" to name , "Email" to email , "ProfileImage" to imageUrl , "uid" to currentUser )
+                    Firebase.firestore.collection("users").document(currentUser).set(map).addOnCompleteListener { task ->
+                        if (task.isSuccessful){
+                            mDatabase.child(currentUser).setValue(map)
+                            _signInResult.value = SignInResult(success = "You have created an account")
+                        }else {
+                            _signInResult.value = SignInResult(error = task.exception?.message)
+                        }
+                    }
 
-                    val map:Map<String , String> = mapOf( "Name" to name , "Email" to email , "uid" to currentUser )
-                    mDatabase.child(currentUser).setValue(map)
                     _signInResult.value = SignInResult(success = "You have created an account")
                 }else {
                     _signInResult.value = SignInResult(error = it.exception?.message)
