@@ -19,16 +19,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         supportActionBar?.hide()
-
         mAuth = FirebaseAuth.getInstance()
-        mAuth.signOut()
 
 
         Handler().postDelayed({
 
+            if(mAuth.currentUser != null){
+                val intent = Intent(this , bottomNav::class.java)
+                startActivity(intent)
+                finish()
+            }else {
                 val intent = Intent(this , logInOption::class.java)
                 startActivity(intent)
                 finish()
+            }
+
 
         },2000)
     }
