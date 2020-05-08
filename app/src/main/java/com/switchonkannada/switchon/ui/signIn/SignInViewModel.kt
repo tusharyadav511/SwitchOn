@@ -33,7 +33,7 @@ class SignInViewModel(): ViewModel() {
             auth.createUserWithEmailAndPassword(email , verifyPassword).addOnCompleteListener {
                 if (it.isSuccessful){
                     val currentUser = it.result!!.user!!.uid
-                    val imageUrl = "https://firebasestorage.googleapis.com/v0/b/switch-on-39001.appspot.com/o/DefaultProfileIcon%20%2FdefaultProfileIcon.png?alt=media&token=d2e5ff1b-36d3-4ba2-9447-254c4dcc1300"
+                    val imageUrl = "https://firebasestorage.googleapis.com/v0/b/switch-on-39001.appspot.com/o/DefaultProfileIcon%20%2FDefaultProfileIcon%20.png?alt=media&token=8b33f712-253e-48c7-931e-1d522b5f9464"
                     val map:Map<String , String> = mapOf( "Name" to name , "Email" to email , "ProfileImage" to imageUrl , "uid" to currentUser )
                     Firebase.firestore.collection("users").document(currentUser).set(map).addOnCompleteListener { task ->
                         if (task.isSuccessful){
