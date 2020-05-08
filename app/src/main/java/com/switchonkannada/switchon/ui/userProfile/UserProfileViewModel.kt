@@ -25,7 +25,11 @@ class UserProfileViewModel():ViewModel() {
             }else{
                 if (document!!.exists()){
                     val name = document?.getString("Name")
+                    val email = document?.getString("Email")
+                    val profileImage = document?.getString("ProfileImage")
                     _userProfileResult.value = UserProfileResults(name = name)
+                    _userProfileResult.value = UserProfileResults(email = email)
+                    _userProfileResult.value = UserProfileResults(imageUrl = profileImage)
                 }else {
                     _userProfileResult.value = UserProfileResults(noDataError = "No Profile Image Found")
 

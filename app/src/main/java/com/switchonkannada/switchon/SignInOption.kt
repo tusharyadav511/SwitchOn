@@ -171,25 +171,29 @@ class SignInOption : AppCompatActivity() {
                                     AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("Something is wrong with your profile details").setPositiveButton("Ok" , null).show()
                                     mgoogleSignInClient.signOut()
                                     mAuth.signOut()
+                                    progress.visibility = View.GONE
                                 }
                             }
                         } else {
                             AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
+                            progress.visibility = View.GONE
                         } // ...
                     }
             } else {
                 Log.e("TAG", "Is Old User!")
                 AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("The email address is already in use by another account.").setPositiveButton("Ok" , null).show()
                 mgoogleSignInClient.signOut()
+                progress.visibility = View.GONE
             }
 
-            progress.visibility = View.GONE
+
 
         }
 
     }
 
     private fun handleFacebookAccessToken(token: AccessToken , emailFacebook: String) {
+        progress.visibility = View.VISIBLE
         val credential = FacebookAuthProvider.getCredential(token.token)
         mAuth.fetchSignInMethodsForEmail(emailFacebook).addOnCompleteListener {
             val isNewUser: Boolean = it.result?.signInMethods?.isEmpty()!!
@@ -209,16 +213,19 @@ class SignInOption : AppCompatActivity() {
                                 if (name != null && email != null && uid != null && imageUrl != null) {
                                     nextScreen(imageUrl , name , email , uid)
                                 } else {
+                                    progress.visibility = View.GONE
                                     AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("Something is wrong with your profile details").setPositiveButton("Ok" , null).show()
                                     LoginManager.getInstance().logOut()
                                     mAuth.signOut()
                                 }
                             }
                         } else {
+                            progress.visibility = View.GONE
                             AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
                         }
                     }
             } else {
+                progress.visibility = View.GONE
                 Log.e("TAG", "Is Old User!")
                 AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("The email address is already in use by another account.").setPositiveButton("Ok" , null).show()
                 LoginManager.getInstance().logOut()
@@ -234,18 +241,14 @@ class SignInOption : AppCompatActivity() {
         Firebase.firestore.collection("users").document(uid).set(userData).addOnCompleteListener {
             if (it.isSuccessful){
                 FirebaseDatabase.getInstance().reference.child("users").child(uid).setValue(userData)
+                progress.visibility = View.GONE
                 startActivity(intent)
                 finish()
             }else{
+                progress.visibility = View.GONE
                 AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(it.exception?.message).setPositiveButton("Ok" , null).show()
             }
         }
-    }
-
-
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
     }
 
     companion object {

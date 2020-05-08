@@ -163,32 +163,34 @@ class logInOption : AppCompatActivity() {
                             val user = mAuth.currentUser
                             val newUser = it.result!!.additionalUserInfo!!.isNewUser
                             val imageUrl = user?.photoUrl.toString()
-                            val name = user?.displayName
                             val email = user?.email
                             val uid = user?.uid
                             if (!newUser) {
-                                if (imageUrl != null && name != null && email != null && uid != null){
-                                    nextScreen(imageUrl , name , email , uid)
+                                if (imageUrl != null && email != null && uid != null){
+                                    nextScreen(imageUrl , email , uid)
                                 }else {
+                                    process.visibility = View.GONE
                                     AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("Something is wrong with your profile details").setPositiveButton("Ok" , null).show()
                                     mgoogleSignInClient.signOut()
                                     mAuth.signOut()
                                 }
                             }
                         } else {
+                            process.visibility = View.GONE
                             AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(it.exception?.message).setPositiveButton("Ok" , null).show()
                         } // ...
                     }
             } else {
+                process.visibility = View.GONE
                 Log.e("TAG", "Is Old User!")
                 AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("There is no user record corresponding to this identifier. The user may have been deleted.").setPositiveButton("Ok" , null).show()
                 mgoogleSignInClient.signOut()
             }
-            process.visibility = View.GONE
         }
     }
 
     private fun handleFacebookAccessToken(token: AccessToken, emailFacebook: String) {
+        process.visibility = View.VISIBLE
         val credential = FacebookAuthProvider.getCredential(token.token)
         mAuth.fetchSignInMethodsForEmail(emailFacebook).addOnCompleteListener {
             val isNewUser: Boolean = it.result?.signInMethods!!.isEmpty().not()
@@ -200,24 +202,26 @@ class logInOption : AppCompatActivity() {
                             // Sign in success, update UI with the signed-in user's information
                             val user = mAuth.currentUser
                             val newuser = task.result!!.additionalUserInfo!!.isNewUser
-                            val name = user?.displayName
                             val email = user?.email
                             val uid = user?.uid
                             val imageUrl = user?.photoUrl.toString()
                             if (!newuser){
-                                if (name != null && email != null && uid != null && imageUrl != null) {
-                                    nextScreen(imageUrl , name , email , uid)
+                                if (email != null && uid != null && imageUrl != null) {
+                                    nextScreen(imageUrl , email , uid)
                                 } else {
+                                    process.visibility = View.GONE
                                     AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("Something is wrong with your profile details").setPositiveButton("Ok" , null).show()
                                     LoginManager.getInstance().logOut()
                                     mAuth.signOut()
                                 }
                             }
                         } else {
+                            process.visibility = View.GONE
                             AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(task.exception?.message).setPositiveButton("Ok" , null).show()
                         }
                     }
             } else {
+                process.visibility = View.GONE
                 Log.e("TAG", "Is Old User!")
                 AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("There is no user record corresponding to this identifier. The user may have been deleted.").setPositiveButton("Ok" , null).show()
                 LoginManager.getInstance().logOut()
@@ -225,17 +229,19 @@ class logInOption : AppCompatActivity() {
         }
     }
 
-    private fun nextScreen(imageUrl: String , name:String , email:String , uid:String){
+    private fun nextScreen(imageUrl: String , email:String , uid:String){
 
-        val userData = hashMapOf("Name" to name , "Email" to email , "ProfileImage" to imageUrl , "uid" to uid)
+        val userData = hashMapOf( "Email" to email , "ProfileImage" to imageUrl , "uid" to uid)
         val intent = Intent(this , bottomNav :: class.java)
 
         Firebase.firestore.collection("users").document(uid).set(userData).addOnCompleteListener {
             if (it.isSuccessful){
                 FirebaseDatabase.getInstance().reference.child("users").child(uid).setValue(userData)
+                process.visibility = View.GONE
                 startActivity(intent)
                 finish()
             }else{
+                process.visibility = View.GONE
                 AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(it.exception?.message).setPositiveButton("Ok" , null).show()
             }
         }
