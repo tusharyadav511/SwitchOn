@@ -1,6 +1,7 @@
 package com.switchonkannada.switchon.ui.home
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -17,6 +18,7 @@ import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import com.switchonkannada.switchon.CircleTransform
 import com.switchonkannada.switchon.R
+import com.switchonkannada.switchon.UserProfileActivity
 
 class HomeFragment : Fragment() {
 
@@ -49,6 +51,20 @@ class HomeFragment : Fragment() {
         inflater.inflate(R.menu.home_toolbar_menu , menu)
         setUserProfile(menu)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+       return  when(item.itemId) {
+             R.id.homeMenuItem -> {
+                 val intent = Intent(activity, UserProfileActivity::class.java)
+                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                 startActivity(intent)
+                 true
+             }
+             else -> {
+                 super.onOptionsItemSelected(item)
+             }
+         }
     }
 
     private fun setUserProfile(menu: Menu) {
@@ -87,8 +103,6 @@ class HomeFragment : Fragment() {
 
     }
     fun userProfileError (error : String){
-
-
         AlertDialog.Builder(activity , R.style.CustomDialogTheme).setTitle("Error").setMessage(error).setPositiveButton("Ok" , null).show()
     }
 
