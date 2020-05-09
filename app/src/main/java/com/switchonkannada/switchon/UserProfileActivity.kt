@@ -1,15 +1,40 @@
 package com.switchonkannada.switchon
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.annotation.TargetApi
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.AsyncTask
+import android.os.Build
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
+import android.view.View
 import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storageMetadata
 import com.squareup.picasso.Picasso
 import com.switchonkannada.switchon.ui.userProfile.UserProfileViewModel
+import kotlinx.android.synthetic.main.activity_user_profile.*
+import java.io.ByteArrayOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 class UserProfileActivity : AppCompatActivity() {
 
@@ -21,6 +46,23 @@ class UserProfileActivity : AppCompatActivity() {
     lateinit var userEmail:TextView
     lateinit var editUserName:EditText
     lateinit var editUserEmail:TextView
+    lateinit var currentUser:String
+    lateinit var mAuth:FirebaseAuth
+    lateinit var mStorage: FirebaseStorage
+    // Access a Cloud Firestore instance from your Activity
+    val db = Firebase.firestore
+
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode==1){
+            if(grantResults.isNotEmpty() && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                getPhoto()
+            }
+        }
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +79,8 @@ class UserProfileActivity : AppCompatActivity() {
 
         userProfileViewModel = ViewModelProviders.of(this).get(UserProfileViewModel::class.java)
         userProfileViewModel.setUserName()
+
+
 
         userProfileViewModel.userProfileResults.observe(this , Observer {
             val nameResult = it ?: return@Observer
@@ -60,12 +104,129 @@ class UserProfileActivity : AppCompatActivity() {
             }
         })
 
+        userProfileViewModel.userProfileImageResult.observe(this , Observer {
+            val result = it ?: return@Observer
+
+            if(result.success != null){
+                puttingImage()
+            }
+            if (result.error != null){
+                displayErrorMessage(result.error)
+            }
+        })
+
+        userProfileViewModel.puttingImageResult.observe(this , Observer {
+            val result = it ?: return@Observer
+
+            if (result.showProcess != null){
+                when (result.showProcess){
+                    true -> {
+                        showProgress(true)
+                    }else -> {
+                    showProgress(false)
+                }
+                }
+            }
+            if(result.error != null){
+                displayErrorMessage(result.error)
+            }
+        })
+
+
+
         supportActionBar?.hide()
         backButton.setOnClickListener {
             onBackPressed()
         }
         editUserEmail.setOnClickListener {
             Toast.makeText(this , "You are not allowed to change Email Address." , Toast.LENGTH_LONG).show()
+        }
+
+        userProfileImage.setOnClickListener {
+            uploadProfilePhoto()
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode==1 && resultCode== Activity.RESULT_OK && data!=null){
+            try {
+                var selectedImage: Uri =data.data
+                var bitmappic: Bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver,selectedImage)
+                showProgress(true)
+                //Uploading image to database
+                val bao = ByteArrayOutputStream()
+                bitmappic.compress(Bitmap.CompressFormat.JPEG, 15, bao)
+                val data = bao.toByteArray()
+
+                Toast.makeText(this,"Image(s) Uploading",Toast.LENGTH_LONG).show()
+
+                userProfileViewModel.uploadPhoto(data)
+
+            }catch (e:Exception){
+                showProgress(false)
+                e.printStackTrace()
+            }
+        }
+
+    }
+
+
+    private fun uploadProfilePhoto(){
+        if(checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
+            requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),1)
+        }
+        else{
+            getPhoto()
+        }
+    }
+
+    private fun getPhoto(){
+        var intent2:Intent= Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent2,1)
+    }
+
+
+    private fun puttingImage(){
+        userProfileViewModel.putImage(userProfileImage)
+    }
+
+
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private fun showProgress(show: Boolean) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+
+            userLayoutDetails.visibility = if (show) View.GONE else View.VISIBLE
+            userLayoutDetails.animate()
+                .setDuration(shortAnimTime)
+                .alpha((if (show) 0 else 1).toFloat())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        userLayoutDetails.visibility = if (show) View.GONE else View.VISIBLE
+                    }
+                })
+
+            process_Bar.visibility = if (show) View.VISIBLE else View.GONE
+            process_Bar.animate()
+                .setDuration(shortAnimTime)
+                .alpha((if (show) 1 else 0).toFloat())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        process_Bar.visibility = if (show) View.VISIBLE else View.GONE
+                    }
+                })
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            process_Bar.visibility = if (show) View.VISIBLE else View.GONE
+            userLayoutDetails.visibility = if (show) View.GONE else View.VISIBLE
         }
     }
 
@@ -82,9 +243,14 @@ class UserProfileActivity : AppCompatActivity() {
         AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(error).setPositiveButton("Ok" , null).show()
     }
 
+    private fun displayErrorMessage(error: String){
+        AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(error).setPositiveButton("Ok" , null).show()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
     }
+
 }
 

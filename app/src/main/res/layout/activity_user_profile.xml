@@ -102,15 +102,18 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rellay1">
+        android:layout_below="@id/rellay1"
+        android:visibility="visible">
 
         <LinearLayout
+            android:id="@+id/userLayoutDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -144,6 +147,7 @@
                     android:background="@color/grey" />
 
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -182,6 +186,15 @@
 
 
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/process_Bar"
+            style="@android:style/Widget.Holo.Light.ProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/userLayoutDetails"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
