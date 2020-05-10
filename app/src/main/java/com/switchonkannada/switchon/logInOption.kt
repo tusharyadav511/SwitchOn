@@ -162,12 +162,11 @@ class logInOption : AppCompatActivity() {
                         if (it.isSuccessful) {
                             val user = mAuth.currentUser
                             val newUser = it.result!!.additionalUserInfo!!.isNewUser
-                            val imageUrl = user?.photoUrl.toString()
                             val email = user?.email
                             val uid = user?.uid
                             if (!newUser) {
-                                if (imageUrl != null && email != null && uid != null){
-                                    nextScreen(imageUrl , email , uid)
+                                if (email != null && uid != null){
+                                    nextScreen( email , uid)
                                 }else {
                                     process.visibility = View.GONE
                                     AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("Something is wrong with your profile details").setPositiveButton("Ok" , null).show()
@@ -204,10 +203,9 @@ class logInOption : AppCompatActivity() {
                             val newuser = task.result!!.additionalUserInfo!!.isNewUser
                             val email = user?.email
                             val uid = user?.uid
-                            val imageUrl = user?.photoUrl.toString()
                             if (!newuser){
-                                if (email != null && uid != null && imageUrl != null) {
-                                    nextScreen(imageUrl , email , uid)
+                                if (email != null && uid != null) {
+                                    nextScreen(email , uid)
                                 } else {
                                     process.visibility = View.GONE
                                     AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage("Something is wrong with your profile details").setPositiveButton("Ok" , null).show()
@@ -229,12 +227,12 @@ class logInOption : AppCompatActivity() {
         }
     }
 
-    private fun nextScreen(imageUrl: String , email:String , uid:String){
+    private fun nextScreen(email:String , uid:String){
 
-        val userData = hashMapOf( "Email" to email , "ProfileImage" to imageUrl , "uid" to uid)
+        val userData = hashMapOf( "Email" to email  , "uid" to uid)
         val intent = Intent(this , bottomNav :: class.java)
 
-        Firebase.firestore.collection("users").document(uid).set(userData).addOnCompleteListener {
+        Firebase.firestore.collection("users").document(uid).update(userData as Map<String, Any>).addOnCompleteListener {
             if (it.isSuccessful){
                 FirebaseDatabase.getInstance().reference.child("users").child(uid).setValue(userData)
                 process.visibility = View.GONE

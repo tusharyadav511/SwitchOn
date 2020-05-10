@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -16,8 +17,11 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.TextUtils
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -46,11 +50,8 @@ class UserProfileActivity : AppCompatActivity() {
     lateinit var userEmail:TextView
     lateinit var editUserName:EditText
     lateinit var editUserEmail:TextView
-    lateinit var currentUser:String
-    lateinit var mAuth:FirebaseAuth
-    lateinit var mStorage: FirebaseStorage
-    // Access a Cloud Firestore instance from your Activity
-    val db = Firebase.firestore
+
+
 
 
 
@@ -113,6 +114,23 @@ class UserProfileActivity : AppCompatActivity() {
             if (result.error != null){
                 displayErrorMessage(result.error)
             }
+
+            if(result.onTick != null){
+                uploadButton?.visibility = View.GONE
+
+                showProgress(true)
+            }
+
+            if(result.onFinish != null){
+                uploadButton?.visibility = View.VISIBLE
+
+                //  progress.visibility = View.GONE
+
+                showProgress(false)
+
+                Toast.makeText(this,"Profile Changed!",Toast.LENGTH_LONG).show()
+                finish()
+            }
         })
 
         userProfileViewModel.puttingImageResult.observe(this , Observer {
@@ -144,6 +162,10 @@ class UserProfileActivity : AppCompatActivity() {
 
         userProfileImage.setOnClickListener {
             uploadProfilePhoto()
+        }
+
+        uploadButton.setOnClickListener {
+            saveProfile()
         }
     }
 
@@ -230,6 +252,31 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun saveProfile(){
+        editUserName.error = null
+        val nameString = editUserName.text.toString()
+
+        var cancel= false
+        var focusView:View ?=null
+
+        if(TextUtils.isEmpty(nameString)){
+            editUserName.error = getString(R.string.error_field_required)
+            focusView = editUserName
+            cancel = true
+        }
+
+        if(cancel){
+            focusView?.requestFocus()
+        }else{
+            updateUser()
+        }
+    }
+
+    private fun updateUser(){
+        hideKeyboard()
+        userProfileViewModel.updateUser(editUserName)
+    }
+
     private fun setUserProfile(url:String){
         Picasso.get().load(url).transform( CircleTransform()).placeholder(R.drawable.person_icon).error(R.drawable.error).into(userProfileImage)
     }
@@ -250,6 +297,19 @@ class UserProfileActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    private fun hideKeyboard() {
+        try {
+            val activityView = this?.window?.decorView?.rootView
+            activityView?.let {
+                val imm =
+                    this?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(it.windowToken, 0)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 }

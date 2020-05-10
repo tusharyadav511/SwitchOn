@@ -3,6 +3,8 @@ package com.switchonkannada.switchon.ui.userProfile
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
+import android.os.CountDownTimer
+import android.widget.EditText
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -92,6 +94,23 @@ class UserProfileViewModel():ViewModel() {
             _puttingImageResult.value = PuttingImageResult(error = it.message)
 
         }
+    }
+
+    fun updateUser(name:EditText){
+        db.collection("users").document(currentUser).update("Name" , name.text.toString())
+
+        object : CountDownTimer(2000, 1000) {
+            override fun onFinish() {
+                auth.currentUser?.reload()
+                _userProfileImageResult.value = UploadProfileImageResult(onFinish = "OnFinish")
+
+
+            }
+            override fun onTick(millisUntilFinished: Long) {
+                _userProfileImageResult.value = UploadProfileImageResult(onTick = "OnTick")
+
+            }
+        }.start()
     }
 
     override fun onCleared() {
