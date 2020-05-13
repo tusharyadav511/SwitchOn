@@ -1,13 +1,15 @@
 package com.switchonkannada.switchon
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import android.view.Window
+import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
         mAuth = FirebaseAuth.getInstance()
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
 
 
         Handler().postDelayed({

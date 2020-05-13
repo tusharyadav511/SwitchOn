@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -73,6 +74,8 @@ class SignInOption : AppCompatActivity() {
         }
 
         supportActionBar?.hide()
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+
 
         mAuth = FirebaseAuth.getInstance()
 

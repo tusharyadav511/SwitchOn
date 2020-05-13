@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
@@ -61,6 +62,7 @@ class logInOption : AppCompatActivity() {
         setContentView(R.layout.activity_log_in_option)
 
         supportActionBar?.hide()
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
 
         emailLogin = findViewById(R.id.emailLogin)
         googleLogin = findViewById(R.id.googleLogin)

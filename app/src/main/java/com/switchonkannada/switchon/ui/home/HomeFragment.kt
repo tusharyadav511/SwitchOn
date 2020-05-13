@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.*
 import android.view.LayoutInflater
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -32,7 +33,6 @@ class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
     private var target : com.squareup.picasso.Target? = null
     private lateinit var mRecycler:RecyclerView
-    private lateinit var mFirestore:CollectionReference
     private var adapter : FirestoreRecyclerAdapter<HomeModel, ProductViewHolder>?= null
 
 
@@ -44,7 +44,6 @@ class HomeFragment : Fragment() {
     ): View? {
         homeViewModel =
             ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        homeViewModel.setUserProfile()
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         setHasOptionsMenu(true)
 
@@ -54,7 +53,6 @@ class HomeFragment : Fragment() {
 
         mRecycler.setHasFixedSize(true)
         mRecycler.layoutManager = layoutManager
-        mFirestore = Firebase.firestore.collection("Movies")
 
         userFeed()
 
@@ -76,8 +74,9 @@ class HomeFragment : Fragment() {
                 position: Int,
                 model: HomeModel
             ) {
-               val url = model.postUrl
-                Picasso.get().load(url).into(holder.poster)
+
+                val url = model.postUrl
+                Picasso.get().load(url).placeholder(R.drawable.hourglass).error(R.drawable.error_icon).into(holder.poster)
             }
 
         }
@@ -90,9 +89,13 @@ class HomeFragment : Fragment() {
         var poster = itemVIew?.findViewById<View>(R.id.moviePoster) as ImageButton
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        setUserProfile(menu)
+        super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.home_toolbar_menu , menu)
-        setUserProfile(menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -111,39 +114,50 @@ class HomeFragment : Fragment() {
     }
 
     private fun setUserProfile(menu: Menu) {
-        activity?.let { activity ->
-            homeViewModel.homeLoadProfileResult.observe(activity, Observer {
-                val homeResult = it ?: return@Observer
 
-                if (homeResult.error != null) {
-                    userProfileError(homeResult.error)
-                }
-                if (homeResult.imageUrl != null){
-                    menu.findItem(R.id.homeMenuItem)?.let { menuItem ->
-                        target = object : com.squareup.picasso.Target {
-                            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                                menuItem.setIcon(R.drawable.person_icon)
-                            }
+        try {
+            activity?.let { activity ->
+                homeViewModel.homeLoadProfileResult.observe(activity, Observer {
+                    val homeResult = it ?: return@Observer
 
-                            override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
-                                menuItem.setIcon(R.drawable.person_icon)
-                            }
-
-                            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                                menuItem.icon =
-                                    BitmapDrawable(resources, CircleTransform.getCroppedBitmap(bitmap!!))
-                            }
-                        }.picassoLoad(homeResult.imageUrl, resources)
+                    if (homeResult.error != null) {
+                        userProfileError(homeResult.error)
                     }
-                }
+                    if (homeResult.imageUrl != null){
+                        menu.findItem(R.id.homeMenuItem)?.let { menuItem ->
+                            try {
+                                target = object : com.squareup.picasso.Target {
+                                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                                        menuItem.setIcon(R.drawable.person_icon)
+                                    }
 
-                if(homeResult.noDataError != null){
-                    noDataError(homeResult.noDataError)
-                }
-            })
+                                    override fun onBitmapFailed(e: java.lang.Exception?, errorDrawable: Drawable?) {
+                                        menuItem.setIcon(R.drawable.person_icon)
+                                    }
+
+                                    override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                                        try {
+                                            menuItem.icon = BitmapDrawable(resources, CircleTransform.getCroppedBitmap(bitmap!!))
+                                        }catch (e:Exception){
+                                            e.printStackTrace()
+                                        }
+
+                                    }
+                                }.picassoLoad(homeResult.imageUrl, resources)
+                            }catch (e:Exception){
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+
+                    if(homeResult.noDataError != null){
+                        noDataError(homeResult.noDataError)
+                    }
+                })
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
         }
-
-
     }
     fun userProfileError (error : String){
         AlertDialog.Builder(activity , R.style.CustomDialogTheme).setTitle("Error").setMessage(error).setPositiveButton("Ok" , null).show()
@@ -152,13 +166,15 @@ class HomeFragment : Fragment() {
     fun noDataError(error: String){
         AlertDialog.Builder(activity , R.style.CustomDialogTheme).setTitle("Error").setMessage(error).setPositiveButton("Ok" , null).show()
     }
+
+    fun com.squareup.picasso.Target.picassoLoad(url: String, resources: Resources): com.squareup.picasso.Target {
+        Picasso.get().load(url)
+            .resize(resources.getDimension(R.dimen.menuIconSize).toInt(),
+                resources.getDimension(R.dimen.menuIconSize).toInt())
+            .into(this)
+
+        return this
+    }
 }
 
-fun com.squareup.picasso.Target.picassoLoad(url: String, resources: Resources): com.squareup.picasso.Target {
-    Picasso.get().load(url)
-        .resize(resources.getDimension(R.dimen.menuIconSize).toInt(),
-            resources.getDimension(R.dimen.menuIconSize).toInt())
-        .into(this)
 
-    return this
-}

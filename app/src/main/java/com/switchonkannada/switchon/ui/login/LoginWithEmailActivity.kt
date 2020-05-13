@@ -21,6 +21,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 import com.switchonkannada.switchon.R
@@ -46,6 +47,8 @@ class LoginWithEmailActivity : AppCompatActivity() {
         }
 
         supportActionBar?.hide()
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+
 
         loginViewModel = ViewModelProviders.of(this)
             .get(LoginViewModel::class.java)

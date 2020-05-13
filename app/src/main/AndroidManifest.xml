@@ -27,6 +27,7 @@
             android:label="@string/title_activity_login_with_email" />
         <activity android:name=".logInOption" />
         <activity android:name=".MainActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

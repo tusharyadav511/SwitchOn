@@ -17,6 +17,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -55,6 +56,8 @@ class signInActivity : AppCompatActivity() {
         }
 
         supportActionBar?.hide()
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+
 
         signInViewMode = ViewModelProviders.of(this).get(SignInViewModel ::class.java)
 
