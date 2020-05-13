@@ -8,22 +8,33 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.firebase.auth.FirebaseAuth
+import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import com.switchonkannada.switchon.CircleTransform
+import com.switchonkannada.switchon.HomeModel
 import com.switchonkannada.switchon.R
 import com.switchonkannada.switchon.UserProfileActivity
+
 
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
     private var target : com.squareup.picasso.Target? = null
+    private lateinit var mRecycler:RecyclerView
+    private lateinit var mFirestore:CollectionReference
+    private var adapter : FirestoreRecyclerAdapter<HomeModel, ProductViewHolder>?= null
+
 
 
     override fun onCreateView(
@@ -33,18 +44,50 @@ class HomeFragment : Fragment() {
     ): View? {
         homeViewModel =
             ViewModelProviders.of(this).get(HomeViewModel::class.java)
-
         homeViewModel.setUserProfile()
-
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val textView: TextView = root.findViewById(R.id.text_home)
-
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
-
         setHasOptionsMenu(true)
+
+        mRecycler = root.findViewById(R.id.homeRecycler)
+        val layoutManager =
+            androidx.recyclerview.widget.LinearLayoutManager(activity)
+
+        mRecycler.setHasFixedSize(true)
+        mRecycler.layoutManager = layoutManager
+        mFirestore = Firebase.firestore.collection("Movies")
+
+        userFeed()
+
         return root
+    }
+
+
+    private fun userFeed(){
+        val query: Query = Firebase.firestore.collection("Movies")
+        val options = FirestoreRecyclerOptions.Builder<HomeModel>().setQuery(query , HomeModel::class.java).build()
+
+        adapter = object : FirestoreRecyclerAdapter<HomeModel , ProductViewHolder>(options){
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
+                val v = LayoutInflater.from(parent.context).inflate(R.layout.home_video_layout , parent , false)
+                return ProductViewHolder(v)
+            }
+            override fun onBindViewHolder(
+                holder: ProductViewHolder,
+                position: Int,
+                model: HomeModel
+            ) {
+               val url = model.postUrl
+                Picasso.get().load(url).into(holder.poster)
+            }
+
+        }
+        mRecycler.adapter = adapter
+        adapter?.startListening()
+    }
+
+
+    private inner class ProductViewHolder(itemVIew:View) : RecyclerView.ViewHolder(itemVIew) {
+        var poster = itemVIew?.findViewById<View>(R.id.moviePoster) as ImageButton
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

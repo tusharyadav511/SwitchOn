@@ -24,10 +24,6 @@ class HomeViewModel : ViewModel() {
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
     private val currentUser = auth.currentUser!!.uid
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
-    }
-    val text: LiveData<String> = _text
 
     private val reference =
         db.collection("users").document(currentUser).addSnapshotListener {document, e ->
