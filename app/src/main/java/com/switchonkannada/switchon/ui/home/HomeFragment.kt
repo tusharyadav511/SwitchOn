@@ -1,6 +1,5 @@
 package com.switchonkannada.switchon.ui.home
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.Resources
@@ -9,7 +8,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
-import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,8 +19,6 @@ import com.squareup.picasso.Picasso
 import com.switchonkannada.switchon.CircleTransform
 import com.switchonkannada.switchon.R
 import com.switchonkannada.switchon.UserProfileActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 
 class HomeFragment : Fragment(), PurchasesUpdatedListener {
@@ -196,15 +192,21 @@ class HomeFragment : Fragment(), PurchasesUpdatedListener {
     }
 
 
+
+
     override fun onPurchasesUpdated(p0: BillingResult?, p1: MutableList<Purchase>?) {
         if (p0?.responseCode == BillingClient.BillingResponseCode.OK && p1 != null) {
             for (purchase in p1) {
-                acknowledgePurchase(purchase.purchaseToken)
+                    acknowledgePurchase(purchase)
+
 
             }
         } else if (p0?.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             // Handle an error caused by a user cancelling the purchase flow.
 
+        } else if (p0?.responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
+
+                    Toast.makeText(activity , "purchase.developerPayload", Toast.LENGTH_LONG).show()
         } else {
             // Handle any other error codes.
         }
@@ -230,7 +232,7 @@ class HomeFragment : Fragment(), PurchasesUpdatedListener {
                                 .setSkuDetails(skuDetails)
                                 .build()
                             billingClient.launchBillingFlow(activity, billingFlowParams)
-                            Toast.makeText(activity , "Puschase" , Toast.LENGTH_LONG).show()
+                         //   Toast.makeText(activity , "Puschase" , Toast.LENGTH_LONG).show()
                         }
                 }
             }
@@ -240,14 +242,21 @@ class HomeFragment : Fragment(), PurchasesUpdatedListener {
         println("Billing Client not ready")
     }
 
-    private fun acknowledgePurchase(purchaseToken: String) {
-        val params = AcknowledgePurchaseParams.newBuilder()
-            .setPurchaseToken(purchaseToken)
-            .build()
-        billingClient.acknowledgePurchase(params) { billingResult ->
-            val responseCode = billingResult.responseCode
-            val debugMessage = billingResult.debugMessage
+    private fun acknowledgePurchase( purchase: Purchase) {
 
+        val consumeParams = ConsumeParams.newBuilder()
+            .setPurchaseToken(purchase.purchaseToken)
+            .setDeveloperPayload(purchase.developerPayload).build()
+
+
+        if(purchase.purchaseState == Purchase.PurchaseState.PURCHASED){
+            if (!purchase.isAcknowledged){
+                billingClient.consumeAsync(consumeParams) { billingResult, _ ->
+                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+
+                    }
+                }
+            }
         }
     }
 
