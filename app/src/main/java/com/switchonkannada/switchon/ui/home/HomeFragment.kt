@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -16,9 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
-import com.switchonkannada.switchon.CircleTransform
-import com.switchonkannada.switchon.R
-import com.switchonkannada.switchon.UserProfileActivity
+import com.switchonkannada.switchon.*
 
 
 class HomeFragment : Fragment(), PurchasesUpdatedListener {
@@ -197,7 +196,7 @@ class HomeFragment : Fragment(), PurchasesUpdatedListener {
     override fun onPurchasesUpdated(p0: BillingResult?, p1: MutableList<Purchase>?) {
         if (p0?.responseCode == BillingClient.BillingResponseCode.OK && p1 != null) {
             for (purchase in p1) {
-                    acknowledgePurchase(purchase)
+                   acknowledgePurchase(purchase)
 
 
             }
@@ -253,6 +252,7 @@ class HomeFragment : Fragment(), PurchasesUpdatedListener {
             if (!purchase.isAcknowledged){
                 billingClient.consumeAsync(consumeParams) { billingResult, _ ->
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                        Toast.makeText(activity, "Yoo" , Toast.LENGTH_LONG).show()
 
                     }
                 }

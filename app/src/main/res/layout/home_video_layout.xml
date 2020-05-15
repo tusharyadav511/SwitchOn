@@ -35,47 +35,6 @@
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="321dp" />
 
-            <ImageButton
-                android:id="@+id/infoButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/imgVideo"
-                android:layout_alignBottom="@id/moviePoster"
-                android:layout_marginLeft="-50dp"
-                android:layout_marginBottom="20dp"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                app:srcCompat="@drawable/info"
-                tools:layout_editor_absoluteX="114dp"
-                tools:layout_editor_absoluteY="456dp" />
-
-            <RelativeLayout
-                android:id="@+id/imgVideo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/moviePoster"
-                android:layout_centerHorizontal="true"
-                android:paddingBottom="15dp">
-
-                <Button
-                    android:id="@+id/button3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_background2"
-                    android:drawableLeft="@drawable/money"
-                    android:fontFamily="casual"
-                    android:padding="5dp"
-                    android:text="Buy"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    tools:layout_editor_absoluteX="251dp"
-                    tools:layout_editor_absoluteY="486dp" />
-
-            </RelativeLayout>
-
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
