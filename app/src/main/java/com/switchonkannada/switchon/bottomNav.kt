@@ -10,6 +10,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.razorpay.Checkout
 
 
 class bottomNav : AppCompatActivity() {
@@ -30,11 +31,15 @@ class bottomNav : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        Checkout.preload(this)
+
+
         val ab: ActionBar? = supportActionBar
         if (ab != null) {
             val gradientBG =
                 resources.getDrawable(R.drawable.grad)
             ab.setBackgroundDrawable(gradientBG)
         }
+
     }
 }

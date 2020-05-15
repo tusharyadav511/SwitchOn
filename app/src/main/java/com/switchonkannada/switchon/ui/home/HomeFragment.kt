@@ -1,26 +1,35 @@
 package com.switchonkannada.switchon.ui.home
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.android.billingclient.api.*
+import com.android.billingclient.api.BillingClient
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.razorpay.Checkout
+import com.razorpay.PaymentResultListener
 import com.squareup.picasso.Picasso
-import com.switchonkannada.switchon.*
+import com.switchonkannada.switchon.CircleTransform
+import com.switchonkannada.switchon.R
+import com.switchonkannada.switchon.ShowMovies
+import com.switchonkannada.switchon.UserProfileActivity
+import org.json.JSONObject
 
 
-class HomeFragment : Fragment(), PurchasesUpdatedListener {
+class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
     private var target: com.squareup.picasso.Target? = null
@@ -57,7 +66,13 @@ class HomeFragment : Fragment(), PurchasesUpdatedListener {
             mRecycler.adapter = adapter.adapter
         })
 
-        billingClient()
+        buttonBuyProduct.setOnClickListener {
+            val intent = Intent(activity, ShowMovies::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+        }
+
+   //     billingClient()
 
         return root
     }
@@ -167,7 +182,7 @@ class HomeFragment : Fragment(), PurchasesUpdatedListener {
         return this
     }
 
-    private fun billingClient() {
+  /*  private fun billingClient() {
         billingClient =
             BillingClient.newBuilder(requireActivity()).enablePendingPurchases().setListener(this)
                 .build()
@@ -258,7 +273,10 @@ class HomeFragment : Fragment(), PurchasesUpdatedListener {
                 }
             }
         }
-    }
+    }*/
+
+
+
 
 
 }

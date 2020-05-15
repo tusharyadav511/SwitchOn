@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UserProfileActivity"></activity>
+        <activity android:name=".ShowMovies"></activity>
+        <activity android:name=".UserProfileActivity" />
         <activity
             android:name=".bottomNav"
             android:label="@string/title_activity_bottom_nav" />
@@ -28,7 +29,6 @@
             android:label="@string/title_activity_login_with_email" />
         <activity android:name=".logInOption" />
         <activity android:name=".MainActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
