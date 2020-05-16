@@ -1,13 +1,21 @@
 package com.switchonkannada.switchon
 
-import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Util
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_trailer.*
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -16,6 +24,10 @@ import kotlinx.android.synthetic.main.activity_trailer.*
 class TrailerActivity : AppCompatActivity() {
 
     lateinit var backButton: FloatingActionButton
+    lateinit var trailerView:PlayerView
+    lateinit var simpleExoPlayer: SimpleExoPlayer
+
+    val videoUrl:String = "https://firebasestorage.googleapis.com/v0/b/switch-on-39001.appspot.com/o/Movie%20on%2021-10-2019%20at%2000.15.mp4?alt=media&token=a1b13ab8-f744-44f7-8074-6d03c6e2d0da"
 
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
@@ -34,9 +46,7 @@ class TrailerActivity : AppCompatActivity() {
     }
     private val mShowPart2Runnable = Runnable {
         // Delayed display of UI elements
-        fullscreen_content_controls.visibility = View.VISIBLE
         backButton.visibility = View.VISIBLE
-        delayedHide(AUTO_HIDE_DELAY_MILLIS)
     }
     private var mVisible: Boolean = false
     private val mHideRunnable = Runnable { hide() }
@@ -56,6 +66,7 @@ class TrailerActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         window.statusBarColor = ContextCompat.getColor(this, R.color.black)
+        trailerView = findViewById(R.id.trailer_movie_view)
 
 
         backButton = findViewById(R.id.trailerBackButton)
@@ -64,6 +75,22 @@ class TrailerActivity : AppCompatActivity() {
 
         // Set up the user interaction to manually show or hide the system UI.
 
+        inExoPlayer()
+
+        trailerView.setControllerVisibilityListener { visibility ->
+                when (visibility) {
+                    View.GONE -> {
+                        backButton.visibility = View.GONE
+                        hide()
+                    }
+                    View.VISIBLE -> {
+                        backButton.visibility = View.VISIBLE
+                        show()
+
+                    }
+                }
+
+        }
 
 
         // Upon interacting with UI controls, delay any scheduled hide()
@@ -94,10 +121,8 @@ class TrailerActivity : AppCompatActivity() {
 
     private fun hide() {
         // Hide UI first
-        fullscreen_content_controls.visibility = View.GONE
         backButton.visibility = View.GONE
         mVisible = false
-
         // Schedule a runnable to remove the status and navigation bar after a delay
         mHideHandler.removeCallbacks(mShowPart2Runnable)
         mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY.toLong())
@@ -114,6 +139,8 @@ class TrailerActivity : AppCompatActivity() {
         mHideHandler.removeCallbacks(mHidePart2Runnable)
         mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY.toLong())
     }
+
+
 
     /**
      * Schedules a call to hide() in [delayMillis], canceling any
@@ -142,5 +169,25 @@ class TrailerActivity : AppCompatActivity() {
          * and a change of the status and navigation bar.
          */
         private const val UI_ANIMATION_DELAY = 300
+    }
+
+
+    private fun inExoPlayer(){
+
+        simpleExoPlayer = SimpleExoPlayer.Builder(this).build()
+        trailerView.player = simpleExoPlayer
+
+        val dataSourceFactory: DataSource.Factory =  DefaultDataSourceFactory(this , Util.getUserAgent(this , "Switch On"))
+
+        val videoSource : MediaSource = ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(videoUrl))
+        simpleExoPlayer.prepare(videoSource)
+        simpleExoPlayer.playWhenReady = true
+        simpleExoPlayer.shuffleModeEnabled = true
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        simpleExoPlayer.release()
     }
 }
