@@ -2,11 +2,13 @@ package com.switchonkannada.switchon
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
 import org.json.JSONObject
@@ -16,15 +18,22 @@ class ShowMovies : AppCompatActivity() , PaymentResultListener  {
     private val TAG = MainActivity::class.java.simpleName
     private val co = Checkout()
     lateinit var collaspingbar: CollapsingToolbarLayout
+    lateinit var showTrailer : FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_movie)
 
         collaspingbar = findViewById(R.id.collaspingToolbar)
+        showTrailer = findViewById(R.id.trailerButton)
         collaspingbar.title = "My name is Tushar Yadav"
 
         supportActionBar?.hide()
+
+        showTrailer.setOnClickListener {
+            val intent = Intent(this , TrailerActivity::class.java)
+            startActivity(intent)
+        }
 
       // startPayment()
     }

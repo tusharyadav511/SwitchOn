@@ -16,7 +16,10 @@
     <color name="followersBg">#65DCE5</color>
     <color name="followingBg">#49BEFF</color>
     <color name="grey">#E5E5E5</color>
-    <color name = "tintYellow">#FFF79C1E</color>
-    <color name= "backgroundGradeStart">#FF0E2B65</color>
-    <color name= "backgroundEnd">#FF296776</color>
+    <color name="tintYellow">#FFF79C1E</color>
+    <color name="backgroundGradeStart">#FF0E2B65</color>
+    <color name="backgroundEnd">#FF296776</color>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="black">#000000</color>
 </resources>
