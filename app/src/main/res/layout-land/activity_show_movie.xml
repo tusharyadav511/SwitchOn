@@ -22,9 +22,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="400dp"
                 android:layout_height="250dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="40dp"
                 android:layout_marginBottom="60dp"
-                android:layout_gravity="center"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="8dp"
                 app:cardUseCompatPadding="true">
@@ -45,14 +45,7 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="15dp"
-        android:background="@color/transparent"
-        android:src="@drawable/toolbar_back"
-        app:layout_anchorGravity="top|left" />
+
 
     <View
         android:id="@+id/view"
@@ -67,6 +60,159 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Language :"
+                    android:textColor="@color/design_default_color_on_secondary" />
+
+                <TextView
+                    android:id="@+id/languageTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingLeft="5dp"
+                    android:text="Hindi"
+                    android:textColor="@color/design_default_color_on_secondary" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingRight="5dp"
+                    android:text="18+"
+                    android:textColor="@color/design_default_color_on_secondary" />
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingRight="5dp"
+                    android:text="|"
+                    android:textColor="@color/design_default_color_on_secondary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Drama Action"
+                    android:textColor="@color/design_default_color_on_secondary" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/play_arrow"
+                        app:backgroundTint="@android:color/tertiary_text_light" />
+
+                    <TextView
+                        android:id="@+id/textView12"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:text="Trailer"
+                        android:textAlignment="center"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/details_icon"
+                        app:backgroundTint="@android:color/tertiary_text_light" />
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:text="More Details"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/button_background3"
+                android:drawableLeft="@drawable/money"
+                android:fontFamily="casual"
+                android:padding="10dp"
+                android:text="Buy Now"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/design_default_color_background"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="fskldjdfklsdjfklsjfklsdfjklsfjslkdfjslkdfjslkfjslkdfjskldfjslkd;fjlskdfjlskdfjslkdfjkldsfjsldkfjdslkfjdsklfjdsklf dsfklsd fjsdlkfsdfsflkjsdflkdsfjlkdsfjkldsfjkldsfjlksdfjlsdkfjadsklfjadklsfjdsklfjasdklfjdslkfjdslkfjlksdfjklds;afjlkasdfjdsklfjsdklfjdsklfjdslkfjsdlkfjsdklfjdslk;fjldsfjldskfjalsdfdslakfjkldsfjklsdfjlksdjfklsdjfsadfklsaldk;fljkadsfl;dsajfl;kjdslkfjladsfjdsklfjsldkfjldsa;fjsdklfjsdklafjlkasdjfklsdjkflsjdklflksdfjkldskljfsdklfjklsdfjklsdfjlksdjflkdsajkflsdjklflksdjfklsdfjklsdfjklsdjflkdasjfkl;sdflkjasdlkfjdslfkdsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsd fsdfsdfsd fsd  sf sda d fsd fds fds f dsf ds fds fdsf dsf asdf sda fds f sdf sdaf dsf sdf sadf sdf sdf ds fsdf sd fsdfsdf sdf sdf sdf sdfsdf sdf sdf sd fsd sa fdsa fsd fds fsd f"
+                android:textColor="@color/design_default_color_on_secondary"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/transparent"
+        android:src="@drawable/toolbar_back"
+        app:layout_anchorGravity="top|left" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
