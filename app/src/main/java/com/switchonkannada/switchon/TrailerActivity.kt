@@ -1,18 +1,29 @@
 package com.switchonkannada.switchon
 
+import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.facebook.share.internal.ShareConstants.CONTENT_URL
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
+import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.TrackSelection
+import com.google.android.exoplayer2.trackselection.TrackSelector
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.BandwidthMeter
 import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_trailer.*
@@ -22,7 +33,7 @@ import kotlinx.android.synthetic.main.activity_trailer.*
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-class TrailerActivity : AppCompatActivity() {
+class TrailerActivity : AppCompatActivity() , Player.EventListener {
 
     lateinit var backButton: FloatingActionButton
     lateinit var trailerView:PlayerView
@@ -172,21 +183,36 @@ class TrailerActivity : AppCompatActivity() {
         private const val UI_ANIMATION_DELAY = 300
     }
 
+    override fun onPlayerError(error: ExoPlaybackException) {
+        AlertDialog.Builder(this , R.style.CustomDialogTheme).setTitle("Error").setMessage(error.sourceException.message).setPositiveButton("Ok" , null).show()
+    }
+
 
     private fun inExoPlayer(){
+        val url = Uri.parse(videoUrl)
+
 
         try {
-            val url = Uri.parse(videoUrl)
-            simpleExoPlayer = SimpleExoPlayer.Builder(this).build()
-            trailerView.player = simpleExoPlayer
-            val dataSourceFactory: DataSource.Factory =  DefaultDataSourceFactory(this , Util.getUserAgent(this , "Switch On"))
-            val videoSource : MediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(url)
-            simpleExoPlayer.prepare(videoSource)
-            simpleExoPlayer.playWhenReady = true
+            val bandwidthMeter: BandwidthMeter = DefaultBandwidthMeter()
+            val videoTrackSelectionFactory: TrackSelection.Factory =
+                AdaptiveTrackSelection.Factory(bandwidthMeter)
+            val trackSelector: TrackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
 
+            //Initialize the player
+            simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
+            trailerView.player = simpleExoPlayer
+
+            //Initialize the player
+            val dataSourceFactory: DataSource.Factory = DefaultHttpDataSourceFactory(Util.getUserAgent(this, "Switch On"))
+            val extractorFactory = DefaultExtractorsFactory()
+            val videoSource: MediaSource = ExtractorMediaSource(url , dataSourceFactory , extractorFactory , null ,null)
+            simpleExoPlayer.prepare(videoSource)
+            simpleExoPlayer.addListener(this)
+            simpleExoPlayer.playWhenReady = true
 
         }catch (e:Exception){
             e.printStackTrace()
+
         }
 
 
