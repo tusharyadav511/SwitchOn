@@ -6,9 +6,10 @@ import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.facebook.share.internal.ShareConstants.CONTENT_URL
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -174,15 +175,21 @@ class TrailerActivity : AppCompatActivity() {
 
     private fun inExoPlayer(){
 
-        simpleExoPlayer = SimpleExoPlayer.Builder(this).build()
-        trailerView.player = simpleExoPlayer
+        try {
+            val url = Uri.parse(videoUrl)
+            simpleExoPlayer = SimpleExoPlayer.Builder(this).build()
+            trailerView.player = simpleExoPlayer
+            val dataSourceFactory: DataSource.Factory =  DefaultDataSourceFactory(this , Util.getUserAgent(this , "Switch On"))
+            val videoSource : MediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(url)
+            simpleExoPlayer.prepare(videoSource)
+            simpleExoPlayer.playWhenReady = true
 
-        val dataSourceFactory: DataSource.Factory =  DefaultDataSourceFactory(this , Util.getUserAgent(this , "Switch On"))
 
-        val videoSource : MediaSource = ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(videoUrl))
-        simpleExoPlayer.prepare(videoSource)
-        simpleExoPlayer.playWhenReady = true
-        simpleExoPlayer.shuffleModeEnabled = true
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+
+
 
     }
 

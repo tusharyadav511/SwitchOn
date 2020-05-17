@@ -30,6 +30,10 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="20dp"
         android:background="@color/black"
+        app:show_buffering="always"
+        app:repeat_toggle_modes = "one"
+        app:fastforward_increment="5000"
+        app:rewind_increment="5000"
         app:shutter_background_color="@color/black"/>
 
 
