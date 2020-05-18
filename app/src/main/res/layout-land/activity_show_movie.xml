@@ -185,6 +185,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/buyButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -193,7 +194,7 @@
                 android:drawableLeft="@drawable/money"
                 android:fontFamily="casual"
                 android:padding="10dp"
-                android:text="Buy Now"
+                android:text="@string/buy_now"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/design_default_color_background"
