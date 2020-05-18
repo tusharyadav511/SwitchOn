@@ -4,18 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blackGrey"
     tools:context=".ShowMovies">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/appBarLayout"
-        android:theme="@style/CustomTheme">
+        android:background="@color/blackGrey"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collaspingToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:contentScrim="@color/blackGrey"
             app:layout_scrollFlags="scroll|snap|enterAlwaysCollapsed"
             app:title="@string/app_name">
 
@@ -33,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/grad" />
+                    android:src="@color/lightBlack" />
 
             </androidx.cardview.widget.CardView>
 
@@ -46,18 +49,18 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/grey"
+        android:background="@color/colorBaseBlack"
         app:layout_anchor="@id/appBarLayout"
-        app:layout_anchorGravity="bottom"/>
+        app:layout_anchorGravity="bottom" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/blackGrey"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -77,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Language :"
-                    android:textColor="@color/design_default_color_on_secondary" />
+                    android:textColor="@color/white" />
 
                 <TextView
                     android:id="@+id/languageTxt"
@@ -86,7 +89,7 @@
                     android:layout_weight="1"
                     android:paddingLeft="5dp"
                     android:text="Hindi"
-                    android:textColor="@color/design_default_color_on_secondary" />
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -102,7 +105,7 @@
                     android:layout_weight="1"
                     android:paddingRight="5dp"
                     android:text="18+"
-                    android:textColor="@color/design_default_color_on_secondary" />
+                    android:textColor="@color/white" />
 
                 <TextView
                     android:id="@+id/textView9"
@@ -111,7 +114,7 @@
                     android:layout_weight="1"
                     android:paddingRight="5dp"
                     android:text="|"
-                    android:textColor="@color/design_default_color_on_secondary"
+                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -121,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Drama Action"
-                    android:textColor="@color/design_default_color_on_secondary" />
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 
@@ -151,6 +154,7 @@
                         android:paddingTop="5dp"
                         android:text="Trailer"
                         android:textAlignment="center"
+                        android:textColor="@color/white"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -174,7 +178,8 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="5dp"
                         android:text="More Details"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:textColor="@color/white" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -200,7 +205,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="fskldjdfklsdjfklsjfklsdfjklsfjslkdfjslkdfjslkfjslkdfjskldfjslkd;fjlskdfjlskdfjslkdfjkldsfjsldkfjdslkfjdsklfjdsklf dsfklsd fjsdlkfsdfsflkjsdflkdsfjlkdsfjkldsfjkldsfjlksdfjlsdkfjadsklfjadklsfjdsklfjasdklfjdslkfjdslkfjlksdfjklds;afjlkasdfjdsklfjsdklfjdsklfjdslkfjsdlkfjsdklfjdslk;fjldsfjldskfjalsdfdslakfjkldsfjklsdfjlksdjfklsdjfsadfklsaldk;fljkadsfl;dsajfl;kjdslkfjladsfjdsklfjsldkfjldsa;fjsdklfjsdklafjlkasdjfklsdjkflsjdklflksdfjkldskljfsdklfjklsdfjklsdfjlksdjflkdsajkflsdjklflksdjfklsdfjklsdfjklsdjflkdasjfkl;sdflkjasdlkfjdslfkdsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsd fsdfsdfsd fsd  sf sda d fsd fds fds f dsf ds fds fdsf dsf asdf sda fds f sdf sdaf dsf sdf sadf sdf sdf ds fsdf sd fsdfsdf sdf sdf sdf sdfsdf sdf sdf sd fsd sa fdsa fsd fds fsd f"
-                android:textColor="@color/design_default_color_on_secondary"
+                android:textColor="@color/white"
                 android:textSize="18sp" />
 
         </LinearLayout>

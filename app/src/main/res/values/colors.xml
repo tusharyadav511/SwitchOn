@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#153C69</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="white">#ffffff</color>
-    <color name="colorBaseBlack">#696969</color>
+    <color name="colorBaseBlack">	#A0A0A0</color>
     <color name="transparent">#00000000</color>
     <color name="address">#2F7092</color>
     <color name="followers">#0D5D98</color>
@@ -22,4 +22,6 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="black">#000000</color>
+    <color name="blackGrey">#121212</color>
+    <color name="lightBlack">#303030</color>
 </resources>

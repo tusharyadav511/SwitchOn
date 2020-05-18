@@ -34,12 +34,12 @@ class bottomNav : AppCompatActivity() {
         Checkout.preload(this)
 
 
-        val ab: ActionBar? = supportActionBar
+        /*val ab: ActionBar? = supportActionBar
         if (ab != null) {
             val gradientBG =
                 resources.getDrawable(R.drawable.grad)
             ab.setBackgroundDrawable(gradientBG)
-        }
+        }*/
 
     }
 }

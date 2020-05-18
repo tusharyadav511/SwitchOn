@@ -31,7 +31,7 @@
                 android:layout_height="360dp"
                 android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/background_gradent"
+                app:srcCompat="@color/lightBlack"
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="321dp" />
 

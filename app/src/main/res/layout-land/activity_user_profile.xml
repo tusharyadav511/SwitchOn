@@ -10,7 +10,7 @@
         android:id="@+id/rellay1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/grad"
+        android:background="@color/lightBlack"
         android:paddingBottom="5dp">
 
         <RelativeLayout
@@ -103,6 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rellay1"
+        android:background="@color/blackGrey"
         android:visibility="visible">
 
         <LinearLayout
@@ -125,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:text="Email"
-                    android:textColor="@color/headings"
+                    android:textColor="@color/solidCircle"
                     android:textSize="13sp" />
 
                 <TextView
@@ -133,18 +134,18 @@
                     style="@android:style/Widget.Material.Light.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_background"
+                    android:background="@color/lightBlack"
                     android:fontFamily="sans-serif-light"
                     android:padding="10dp"
                     android:text="joey@sharenofood.com"
-                    android:textColor="#000000"
+                    android:textColor="@color/white"
                     android:textSize="18sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
+                    android:background="@color/colorBaseBlack" />
 
             </LinearLayout>
 
@@ -160,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:text="Full Name"
-                    android:textColor="@color/headings"
+                    android:textColor="@color/solidCircle"
                     android:textSize="13sp" />
 
                 <EditText
@@ -168,19 +169,19 @@
                     style="@android:style/Widget.Material.Light.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_background"
+                    android:background="@color/lightBlack"
                     android:fontFamily="sans-serif-light"
                     android:inputType="textPersonName"
                     android:padding="10dp"
                     android:text="XYZ"
-                    android:textColor="#000000"
+                    android:textColor="@color/white"
                     android:textSize="18sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
+                    android:background="@color/colorBaseBlack" />
 
             </LinearLayout>
 
