@@ -72,7 +72,7 @@ class HomeViewModel : ViewModel() {
             val key = item?.getKey()
 
 
-            val url = model.postUrl
+            val url = model.moviePoster
             Picasso.get().load(url).placeholder(R.drawable.hourglass).error(R.drawable.error_icon).into(holder.poster)
 
             holder.poster.setOnClickListener {

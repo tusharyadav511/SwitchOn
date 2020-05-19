@@ -16,13 +16,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".PlayMoveActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_play_move"
+            android:theme="@style/FullscreenTheme"></activity>
         <activity
             android:name=".TrailerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="@string/title_activity_trailer"
-            android:theme="@style/FullscreenTheme"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" ></activity>
+            android:theme="@style/FullscreenTheme" />
         <activity android:name=".ShowMovies" />
         <activity android:name=".UserProfileActivity" />
         <activity

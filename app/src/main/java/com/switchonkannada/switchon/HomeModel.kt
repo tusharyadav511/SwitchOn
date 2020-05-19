@@ -3,15 +3,15 @@ package com.switchonkannada.switchon
 import com.google.firebase.database.Exclude
 
 class HomeModel {
-    var postUrl: String? = null
+    var moviePoster: String? = null
     var mkey: String? = null
 
     constructor(){
 
     }
 
-    constructor(postUrl: String?){
-        this.postUrl = postUrl
+    constructor(moviePoster: String?){
+        this.moviePoster = moviePoster
     }
 
     @Exclude

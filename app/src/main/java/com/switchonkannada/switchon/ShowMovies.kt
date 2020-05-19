@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,18 +25,33 @@ class ShowMovies : AppCompatActivity() , PaymentResultListener  {
     private val currentUser = FirebaseAuth.getInstance().currentUser?.uid
     lateinit var buyButton:Button
     lateinit var photoId: String
+    private val bd = Firebase.firestore.collection("Movies")
+    lateinit var rzpApi:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_movie)
+
+
+        Firebase.firestore.collection("paymentApi").document("rzpApi").addSnapshotListener { documentSnapshot, exception ->
+            if (exception != null){
+                AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("Error").setMessage(exception.message)
+                    .setPositiveButton("Ok", null).show()
+            }else{
+                val key = documentSnapshot?.getString("apiKeyId")
+                if (key != null) {
+                    rzpApi = key
+                }
+            }
+        }
+
+
 
         collaspingbar = findViewById(R.id.collaspingToolbar)
         showTrailer = findViewById(R.id.trailerButton)
         buyButton = findViewById(R.id.buyButton)
         photoId = intent.getStringExtra("post_key")
 
-        AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("PhotoId").setMessage(photoId)
-            .setPositiveButton("Ok", null).show()
 
         buyButton()
         collaspingbar.title = "My name is Tushar Yadav"
@@ -48,37 +62,57 @@ class ShowMovies : AppCompatActivity() , PaymentResultListener  {
             val intent = Intent(this , TrailerActivity::class.java)
             startActivity(intent)
         }
-
-
-
-      // startPayment()
+        buyButton.setOnClickListener {
+            buttonPressed()
+        }
     }
 
     private fun buyButton(){
-        Firebase.firestore.collection("Movies").document("JWXJWQVGLGlq8QIE3M7H")
-            .collection("users").whereEqualTo(currentUser!! , false).addSnapshotListener { snapshot, exception ->
+        bd.document(photoId)
+            .collection("users").whereEqualTo(currentUser!! , false).addSnapshotListener {
+                    snapshot, exception ->
+
                 if (exception != null){
                     AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("Error").setMessage(exception.message)
                         .setPositiveButton("Ok", null).show()
                 }else{
-                    if (snapshot!!.isEmpty){
+                    if (snapshot?.isEmpty == false){
                         val drawable = ContextCompat.getDrawable(this, R.drawable.money)
                         buyButton.text = getString(R.string.buy_now)
-                        buyButton.setCompoundDrawablesWithIntrinsicBounds(drawable , null ,null ,null)
-                    }else{
-                        val drawable = ContextCompat.getDrawable(this, R.drawable.play_arrow)
-                        buyButton.text = getString(R.string.play_now)
                         buyButton.setCompoundDrawablesWithIntrinsicBounds(drawable , null ,null ,null)
                     }
                 }
             }
+
+        bd.document(photoId).collection("users").whereEqualTo(currentUser!! , true).addSnapshotListener { querySnapshot, firestoreException ->
+            if (firestoreException != null){
+                AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("Error").setMessage(firestoreException.message)
+                    .setPositiveButton("Ok", null).show()
+            }else{
+                if (querySnapshot?.isEmpty == false){
+                    val drawable = ContextCompat.getDrawable(this, R.drawable.play_arrow)
+                    buyButton.text = getString(R.string.play_now)
+                    buyButton.setCompoundDrawablesWithIntrinsicBounds(drawable , null ,null ,null)
+                }
+            }
+        }
+    }
+
+    private fun buttonPressed(){
+
+        if(buyButton.text == getString(R.string.buy_now) ){
+            startPayment()
+        }else{
+            val intent = Intent(this , PlayMoveActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.putExtra("MovieId" , photoId)
+            startActivity(intent)
+        }
     }
 
     private fun startPayment(){
-        co.setKeyID("rzp_test_d5h4wAHU4Ax9y7")
+        co.setKeyID(rzpApi)
         val activity:Activity = this
-
-
         try {
             val options = JSONObject()
             options.put("name","Razorpay Corp")
@@ -101,13 +135,23 @@ class ShowMovies : AppCompatActivity() , PaymentResultListener  {
     }
 
     override fun onPaymentError(p0: Int, p1: String?) {
-        Toast.makeText(this , p1 , Toast.LENGTH_LONG).show()
-        Log.i("Fuck" , p1)
+        AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("Error").setMessage(p1)
+            .setPositiveButton("Ok", null).show()
     }
 
     override fun onPaymentSuccess(p0: String?) {
-        Toast.makeText(this , p0 , Toast.LENGTH_LONG).show()
-        AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("Success").setMessage("YoYOYOYO")
-            .setPositiveButton("Ok", null).show()
+        val data = hashMapOf(
+            currentUser to true
+        )
+        bd.document(photoId).collection("users").document(currentUser!!).set(data).addOnCompleteListener {
+            if(it.isSuccessful){
+                AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("Success").setMessage("Payment Successful!")
+                    .setPositiveButton("Ok", null).show()
+            }else{
+                AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("Error").setMessage(it.exception?.message)
+                    .setPositiveButton("Ok", null).show()
+            }
+        }
+
     }
 }

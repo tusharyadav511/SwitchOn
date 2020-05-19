@@ -25,4 +25,6 @@
     <string name="buy_now">Buy Now</string>
     <string name="play_now">Play Now</string>
 
+    <string name="title_activity_play_move">PlayMoveActivity</string>
+
 </resources>
