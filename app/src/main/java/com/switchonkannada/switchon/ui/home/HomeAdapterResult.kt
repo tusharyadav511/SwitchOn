@@ -1,5 +1,6 @@
 package com.switchonkannada.switchon.ui.home
 
+import android.content.Context
 import android.view.View
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
@@ -13,4 +14,5 @@ data class HomeAdapterResult (
 
 class ProductViewHolder (itemVIew: View) : RecyclerView.ViewHolder(itemVIew) {
     var poster = itemVIew?.findViewById<View>(R.id.moviePoster) as ImageButton
+
 }

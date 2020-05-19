@@ -35,10 +35,7 @@ class HomeFragment : Fragment() {
     private var target: com.squareup.picasso.Target? = null
     private lateinit var mRecycler: RecyclerView
     private lateinit var billingClient: BillingClient
-    private val skuList = listOf("android.test.purchased")
-
-    lateinit var buttonBuyProduct: FloatingActionButton
-
+  //  private val skuList = listOf("android.test.purchased")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,7 +49,6 @@ class HomeFragment : Fragment() {
         setHasOptionsMenu(true)
 
         mRecycler = root.findViewById(R.id.homeRecycler)
-        buttonBuyProduct = root.findViewById(R.id.buttonBuyProduct)
 
         val layoutManager =
             androidx.recyclerview.widget.LinearLayoutManager(activity)
@@ -66,11 +62,15 @@ class HomeFragment : Fragment() {
             mRecycler.adapter = adapter.adapter
         })
 
-        buttonBuyProduct.setOnClickListener {
-            val intent = Intent(activity, ShowMovies::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
-        }
+        homeViewModel.homeAdapterPostKey.observe(viewLifecycleOwner , Observer {
+            val key = it ?: return@Observer
+            if(key.key != null){
+                val intent = Intent(activity, ShowMovies::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.putExtra("post_key" , key.key)
+                startActivity(intent)
+            }
+        })
 
    //     billingClient()
 
@@ -274,11 +274,6 @@ class HomeFragment : Fragment() {
             }
         }
     }*/
-
-
-
-
-
 }
 
 

@@ -1,6 +1,5 @@
 package com.switchonkannada.switchon
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -26,6 +25,7 @@ class ShowMovies : AppCompatActivity() , PaymentResultListener  {
     lateinit var showTrailer : FloatingActionButton
     private val currentUser = FirebaseAuth.getInstance().currentUser?.uid
     lateinit var buyButton:Button
+    lateinit var photoId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +34,11 @@ class ShowMovies : AppCompatActivity() , PaymentResultListener  {
         collaspingbar = findViewById(R.id.collaspingToolbar)
         showTrailer = findViewById(R.id.trailerButton)
         buyButton = findViewById(R.id.buyButton)
+        photoId = intent.getStringExtra("post_key")
+
+        AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("PhotoId").setMessage(photoId)
+            .setPositiveButton("Ok", null).show()
+
         buyButton()
         collaspingbar.title = "My name is Tushar Yadav"
 

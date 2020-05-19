@@ -1,7 +1,9 @@
 package com.switchonkannada.switchon.ui.home
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +16,7 @@ import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import com.switchonkannada.switchon.HomeModel
 import com.switchonkannada.switchon.R
+import com.switchonkannada.switchon.ShowMovies
 import java.lang.Exception
 
 class HomeViewModel : ViewModel() {
@@ -28,6 +31,10 @@ class HomeViewModel : ViewModel() {
 
     private val _homeLoadProfileResult = MutableLiveData<HomeLoadProfileResult>()
     val homeLoadProfileResult : LiveData<HomeLoadProfileResult> = _homeLoadProfileResult
+
+    private val _homeAdapterPostKey = MutableLiveData<HomeAdapterPostKey>()
+    val homeAdapterPostKey : LiveData<HomeAdapterPostKey> = _homeAdapterPostKey
+
 
     private val reference =
          db.collection("users").document(currentUser).addSnapshotListener {document, e ->
@@ -59,8 +66,18 @@ class HomeViewModel : ViewModel() {
             position: Int,
             model: HomeModel
         ) {
+
+            model.setKey(snapshots.getSnapshot(position).id)
+            val item = snapshots[position]
+            val key = item?.getKey()
+
+
             val url = model.postUrl
             Picasso.get().load(url).placeholder(R.drawable.hourglass).error(R.drawable.error_icon).into(holder.poster)
+
+            holder.poster.setOnClickListener {
+                _homeAdapterPostKey.value = HomeAdapterPostKey(key = key)
+            }
         }
 
     })
