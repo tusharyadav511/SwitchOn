@@ -7,24 +7,15 @@ import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.dash.DashMediaSource
+import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelection
-import com.google.android.exoplayer2.trackselection.TrackSelector
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.BandwidthMeter
-import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.google.android.exoplayer2.util.Util
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_trailer.*
 
@@ -38,9 +29,8 @@ class TrailerActivity : AppCompatActivity() , Player.EventListener {
     lateinit var backButton: FloatingActionButton
     lateinit var trailerView:PlayerView
     lateinit var simpleExoPlayer: SimpleExoPlayer
-
-    val videoUrl:String = "https://firebasestorage.googleapis.com/v0/b/switch-on-39001.appspot.com/o/Movie%20on%2021-10-2019%20at%2000.15.mp4?alt=media&token=a1b13ab8-f744-44f7-8074-6d03c6e2d0da"
-
+    private var playbackPosition = 0L
+    private val videoUrl:String = "http://rdmedia.bbc.co.uk/dash/ondemand/bbb/2/client_manifest-separate_init.mpd"
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
         // Delayed removal of status and navigation bar
@@ -60,8 +50,19 @@ class TrailerActivity : AppCompatActivity() , Player.EventListener {
         // Delayed display of UI elements
         backButton.visibility = View.VISIBLE
     }
+
+    private val bandwidthMeter by lazy {
+        DefaultBandwidthMeter()
+    }
+
+    private val adaptiveTrackSelectionFactory by lazy {
+        AdaptiveTrackSelection.Factory(bandwidthMeter)
+    }
+
     private var mVisible: Boolean = false
     private val mHideRunnable = Runnable { hide() }
+
+
 
     /**
      * Touch listener to use for in-layout UI controls to delay hiding the
@@ -87,23 +88,25 @@ class TrailerActivity : AppCompatActivity() , Player.EventListener {
 
         // Set up the user interaction to manually show or hide the system UI.
 
-        inExoPlayer()
+      //  inExoPlayer()
 
         trailerView.setControllerVisibilityListener { visibility ->
-                when (visibility) {
-                    View.GONE -> {
-                        backButton.visibility = View.GONE
-                        hide()
-                    }
-                    View.VISIBLE -> {
-                        backButton.visibility = View.VISIBLE
-                        show()
-
-                    }
+            when (visibility) {
+                View.GONE -> {
+                    backButton.visibility = View.GONE
+                    hide()
                 }
+                View.VISIBLE -> {
+                    backButton.visibility = View.VISIBLE
+                    show()
+
+                }
+            }
 
         }
 
+
+        initializeExoplayer()
 
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
@@ -112,6 +115,11 @@ class TrailerActivity : AppCompatActivity() , Player.EventListener {
         backButton.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    override fun onStop() {
+        releaseExoplayer()
+        super.onStop()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -188,7 +196,37 @@ class TrailerActivity : AppCompatActivity() , Player.EventListener {
     }
 
 
-    private fun inExoPlayer(){
+    private fun buildMediaSource(url:Uri) : MediaSource{
+        val dataSourceFactory = DefaultHttpDataSourceFactory("ua" , bandwidthMeter)
+        val dashChunkSourceFactory = DefaultDashChunkSource.Factory(dataSourceFactory)
+        return  DashMediaSource(url , dataSourceFactory , dashChunkSourceFactory, null ,null)
+    }
+
+
+    private fun prepareExoplayer(){
+        val uri = Uri.parse(videoUrl)
+        val mediaSource = buildMediaSource(uri)
+        simpleExoPlayer.prepare(mediaSource)
+    }
+
+    private fun initializeExoplayer(){
+        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(this , DefaultRenderersFactory(this),
+            DefaultTrackSelector(adaptiveTrackSelectionFactory) , DefaultLoadControl())
+
+        prepareExoplayer()
+        trailerView.player = simpleExoPlayer
+        simpleExoPlayer.seekTo(playbackPosition)
+        simpleExoPlayer.addListener(this)
+        simpleExoPlayer.playWhenReady = true
+
+    }
+
+    private fun releaseExoplayer(){
+        playbackPosition = simpleExoPlayer.currentPosition
+        simpleExoPlayer.release()
+    }
+
+   /* private fun inExoPlayer(){
         val url = Uri.parse(videoUrl)
 
 
@@ -214,13 +252,5 @@ class TrailerActivity : AppCompatActivity() , Player.EventListener {
             e.printStackTrace()
 
         }
-
-
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        simpleExoPlayer.release()
-    }
+    }*/
 }
