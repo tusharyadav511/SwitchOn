@@ -2,7 +2,8 @@ package com.switchonkannada.switchon
 
 import com.google.firebase.database.Exclude
 
-class HomeModel {
+class SongHomeModel {
+
     var poster: String? = null
     var mkey: String? = null
 
