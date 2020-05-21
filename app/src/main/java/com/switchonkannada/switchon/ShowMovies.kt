@@ -19,6 +19,8 @@ import org.json.JSONObject
 
 class ShowMovies : AppCompatActivity() , PaymentResultListener  {
 
+
+    lateinit var backButton: FloatingActionButton
     private val co = Checkout()
     private lateinit var collaspingbar: CollapsingToolbarLayout
     lateinit var showTrailer : FloatingActionButton
@@ -51,6 +53,7 @@ class ShowMovies : AppCompatActivity() , PaymentResultListener  {
         showTrailer = findViewById(R.id.trailerButton)
         buyButton = findViewById(R.id.buyButton)
         photoId = intent.getStringExtra("post_key")
+        backButton = findViewById(R.id.backButtonMovie)
 
 
         buyButton()
@@ -64,6 +67,9 @@ class ShowMovies : AppCompatActivity() , PaymentResultListener  {
         }
         buyButton.setOnClickListener {
             buttonPressed()
+        }
+        backButton.setOnClickListener {
+            onBackPressed()
         }
     }
 

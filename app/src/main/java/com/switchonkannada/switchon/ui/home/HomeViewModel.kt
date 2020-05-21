@@ -133,10 +133,10 @@ class HomeViewModel : ViewModel() {
     }
 
     override fun onCleared() {
-        super.onCleared()
         reference.remove()
         songAdapter.songAdapter?.stopListening()
         adapter.adapter?.stopListening()
+        super.onCleared()
     }
 
 
