@@ -57,7 +57,7 @@ class ShowMovies : AppCompatActivity(), PaymentResultListener {
             val api = it ?: return@Observer
 
             if (api.error != null) {
-                //TODO :- add error
+                errorMessage(api.error)
             }
             if (api.api != null) {
                 rzpApi = api.api
@@ -80,7 +80,7 @@ class ShowMovies : AppCompatActivity(), PaymentResultListener {
             val adapter = it ?:return@Observer
 
             if (adapter.error != null){
-                //TODO :- add error
+                errorMessage(adapter.error)
             }
             if(adapter.name != null){
                 collaspingbar.title = adapter.name
@@ -237,5 +237,11 @@ class ShowMovies : AppCompatActivity(), PaymentResultListener {
                     .setPositiveButton("Ok", null).show()
             }
         })
+    }
+
+    fun errorMessage(error :String){
+        AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("Error")
+            .setMessage(error)
+            .setPositiveButton("Ok", null).show()
     }
 }
