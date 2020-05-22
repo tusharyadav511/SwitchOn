@@ -14,14 +14,27 @@ class ShowMovieViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val currentUser = auth.currentUser!!.uid
 
-    lateinit var loadMovie: ListenerRegistration
-    lateinit var buyButtonFalseRef: ListenerRegistration
-    lateinit var buyButtonTrueRef: ListenerRegistration
+
+    private lateinit var loadMovie: ListenerRegistration
+    private lateinit var buyButtonFalseRef: ListenerRegistration
+    private lateinit var buyButtonTrueRef: ListenerRegistration
 
     private val _showMovieDetailsResult = MutableLiveData<ShowMovieDetailsResult>()
     val showMovieDetailsResult: LiveData<ShowMovieDetailsResult> = _showMovieDetailsResult
 
-    private val _showMovieAPiResult = MutableLiveData<ShowMoveApiResult>()
+    private val _showMovieAPiResult = MutableLiveData<ShowMoveApiResult>().apply {
+        Firebase.firestore.collection("paymentApi").document("rzpApi")
+            .addSnapshotListener { documentSnapshot, exception ->
+                if (exception != null) {
+                    this.value = ShowMoveApiResult(error = exception.message)
+                } else {
+                    val key = documentSnapshot?.getString("apiKeyId")
+                    if (key != null) {
+                        this.value = ShowMoveApiResult(api = key)
+                    }
+                }
+            }
+    }
     val showMovieApiResult : LiveData<ShowMoveApiResult> = _showMovieAPiResult
 
     private val _buyButtonFalse = MutableLiveData<BuyButtonFalse>()
@@ -51,6 +64,7 @@ class ShowMovieViewModel : ViewModel() {
                         val language = documentSnapshot.getString("language")
                         val movieUrl = documentSnapshot.getString("movieUrl")
                         val poster = documentSnapshot.getString("poster")
+                        val trailer = documentSnapshot.getString("trailer")
 
                         _showMovieDetailsResult.value = ShowMovieDetailsResult(
                             name = name, about = about,
@@ -58,26 +72,16 @@ class ShowMovieViewModel : ViewModel() {
                             age = age,
                             language = language,
                             movieUrl = movieUrl,
-                            poster = poster
+                            poster = poster,
+                            trailer = trailer
                         )
                     }
                 }
             }
     }
 
-    private val paymentApiRef = Firebase.firestore.collection("paymentApi").document("rzpApi")
-        .addSnapshotListener { documentSnapshot, exception ->
-            if (exception != null) {
-                _showMovieAPiResult.value = ShowMoveApiResult(error = exception.message)
-            } else {
-                val key = documentSnapshot?.getString("apiKeyId")
-                if (key != null) {
-                    _showMovieAPiResult.value = ShowMoveApiResult(api = key)
-                }
-            }
-        }
 
-    private fun buyButtonRef(movieId: String) {
+     fun buyButtonRef(movieId: String) {
         buyButtonFalseRef =
             Firebase.firestore.collection("Movies").document(movieId).collection("users")
                 .whereEqualTo(currentUser!!, false).addSnapshotListener { snapshot, exception ->
@@ -105,7 +109,7 @@ class ShowMovieViewModel : ViewModel() {
                 }
     }
 
-    private fun paymentSuccessRef(movieId: String) {
+     fun paymentSuccessRef(movieId: String) {
 
         val data = hashMapOf(
             currentUser to true
@@ -120,14 +124,4 @@ class ShowMovieViewModel : ViewModel() {
                 }
             }
     }
-
-
-    override fun onCleared() {
-        loadMovie?.remove()
-        paymentApiRef.remove()
-        buyButtonFalseRef.remove()
-        buyButtonTrueRef.remove()
-        super.onCleared()
-    }
-
 }

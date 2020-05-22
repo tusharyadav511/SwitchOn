@@ -8,5 +8,6 @@ data class ShowMovieDetailsResult (
     val language : String ?= null,
     val movieUrl : String ?= null,
     val poster : String ?= null,
-    val error : String ?= null
+    val error : String ?= null,
+    val trailer : String ?= null
 )

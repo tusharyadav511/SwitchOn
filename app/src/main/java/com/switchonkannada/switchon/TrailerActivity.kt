@@ -30,8 +30,8 @@ class TrailerActivity : AppCompatActivity() , Player.EventListener {
     lateinit var trailerView:PlayerView
     lateinit var simpleExoPlayer: SimpleExoPlayer
     private var playbackPosition = 0L
-    private val videoUrl:String = "http://rdmedia.bbc.co.uk/dash/ondemand/bbb/2/client_manifest-separate_init.mpd"
-    private val url = Uri.parse(videoUrl)
+    private lateinit var videoUrl:String
+    private lateinit var url : Uri
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
         // Delayed removal of status and navigation bar
@@ -72,15 +72,15 @@ class TrailerActivity : AppCompatActivity() , Player.EventListener {
         fullscreen_content.setOnClickListener { toggle() }
         supportActionBar?.hide()
 
+        videoUrl = intent.getStringExtra("trailerUrl")
+        url = Uri.parse(videoUrl)
+
         window.statusBarColor = ContextCompat.getColor(this, R.color.black)
         trailerView = findViewById(R.id.trailer_movie_view)
-
-
         backButton = findViewById(R.id.trailerBackButton)
-
         mVisible = true
 
-        // Set up the user interaction to manually show or hide the system UI.
+
 
         inExoPlayer()
 
