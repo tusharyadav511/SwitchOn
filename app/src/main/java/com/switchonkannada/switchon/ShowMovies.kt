@@ -14,9 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
 import com.squareup.picasso.Picasso
@@ -26,11 +23,9 @@ import org.json.JSONObject
 class ShowMovies : AppCompatActivity(), PaymentResultListener {
 
 
-    lateinit var showMoviesViewModel: ShowMovieViewModel
+    private lateinit var showMoviesViewModel: ShowMovieViewModel
     private val co = Checkout()
-    private val currentUser = FirebaseAuth.getInstance().currentUser?.uid
     private lateinit var photoId: String
-    private val bd = Firebase.firestore.collection("Movies")
     private lateinit var rzpApi: String
     private lateinit var movieUrl : String
     private lateinit var trailer:String
@@ -204,7 +199,7 @@ class ShowMovies : AppCompatActivity(), PaymentResultListener {
             options.put("currency", "INR")
             options.put("amount", "100")
 
-            val prefill = JSONObject()
+           // val prefill = JSONObject()
             //  prefill.put("email","test@razorpay.com")
             //  prefill.put("contact","9876543210")
 
@@ -239,7 +234,7 @@ class ShowMovies : AppCompatActivity(), PaymentResultListener {
         })
     }
 
-    fun errorMessage(error :String){
+    private fun errorMessage(error :String){
         AlertDialog.Builder(this, R.style.CustomDialogTheme).setTitle("Error")
             .setMessage(error)
             .setPositiveButton("Ok", null).show()
