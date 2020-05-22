@@ -17,10 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.android.billingclient.api.BillingClient
 import com.squareup.picasso.Picasso
-import com.switchonkannada.switchon.CircleTransform
-import com.switchonkannada.switchon.R
-import com.switchonkannada.switchon.ShowMovies
-import com.switchonkannada.switchon.UserProfileActivity
+import com.switchonkannada.switchon.*
 
 
 class HomeFragment : Fragment() {
@@ -83,6 +80,17 @@ class HomeFragment : Fragment() {
                 val intent = Intent(activity, ShowMovies::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.putExtra("post_key", key.key)
+                startActivity(intent)
+            }
+        })
+
+        homeViewModel.homeSongUrl.observe(viewLifecycleOwner , Observer {
+            val key = it ?: return@Observer
+
+            if (key.songUrl != null){
+                val intent = Intent(activity , SongActivity ::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.putExtra("song_url", key.songUrl)
                 startActivity(intent)
             }
         })

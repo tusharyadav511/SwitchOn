@@ -182,7 +182,7 @@ class ShowMovies : AppCompatActivity(), PaymentResultListener {
         } else {
             val intent = Intent(this, PlayMoveActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.putExtra("MovieId", photoId)
+            intent.putExtra("MovieUrl", movieUrl)
             startActivity(intent)
         }
     }

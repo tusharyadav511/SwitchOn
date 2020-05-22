@@ -27,4 +27,6 @@
 
     <string name="title_activity_play_move">PlayMoveActivity</string>
 
+    <string name="title_activity_song">SongActivity</string>
+
 </resources>

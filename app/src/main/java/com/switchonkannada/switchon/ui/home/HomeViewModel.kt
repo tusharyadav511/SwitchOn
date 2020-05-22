@@ -41,6 +41,9 @@ class HomeViewModel : ViewModel() {
     private val _homeAdapterPostKey = MutableLiveData<HomeAdapterPostKey>()
     val homeAdapterPostKey: LiveData<HomeAdapterPostKey> = _homeAdapterPostKey
 
+    private val _homeSongUrl = MutableLiveData<HomeSongUrl>()
+    val homeSongUrl : LiveData<HomeSongUrl> = _homeSongUrl
+
 
 
 
@@ -102,15 +105,18 @@ class HomeViewModel : ViewModel() {
                 .inflate(R.layout.home_song_layout, parent, false)
             return SongViewHolder(v)
         }
-
         override fun onBindViewHolder(holder: SongViewHolder, position: Int, model: SongHomeModel) {
             model.setKey(snapshots.getSnapshot(position).id)
 
             val url = model.poster
+            val songUrl = model.songUrl
             Picasso.get().load(url).transform(CircleTransform()).placeholder(R.drawable.hourglass)
                 .error(R.drawable.error_icon).into(holder.poster)
-        }
 
+            holder.poster.setOnClickListener {
+                _homeSongUrl.value = HomeSongUrl(songUrl = songUrl)
+            }
+        }
     })
 
 
