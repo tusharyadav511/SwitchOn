@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.switchonkannada.switchon">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,35 +20,72 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PrivacyPolicyActivity"></activity>
-        <activity android:name=".PasswordResetActivity" />
+
+        <activity android:name=".PrivacyPolicyActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
+        <activity android:name=".PasswordResetActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
         <activity
             android:name=".SongActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_song"
-            android:theme="@style/FullscreenTheme" />
+            android:theme="@style/FullscreenTheme"
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".PlayMoveActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_play_move"
-            android:theme="@style/FullscreenTheme" />
+            android:theme="@style/FullscreenTheme"
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".TrailerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_trailer"
-            android:theme="@style/FullscreenTheme" />
+            android:theme="@style/FullscreenTheme"
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity"/>
+
         <activity android:name=".ShowMovies" />
+
         <activity android:name=".UserProfileActivity" />
         <activity
             android:name=".bottomNav"
             android:label="@string/title_activity_bottom_nav" />
-        <activity android:name=".SignInOption" />
-        <activity android:name=".signInActivity" />
+
+        <activity android:name=".SignInOption"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
+        <activity android:name=".signInActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
         <activity
             android:name=".ui.login.LoginWithEmailActivity"
-            android:label="@string/title_activity_login_with_email" />
-        <activity android:name=".logInOption" />
-        <activity android:name=".MainActivity">
+            android:label="@string/title_activity_login_with_email"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
+        <activity android:name=".logInOption"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity"/>
+
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

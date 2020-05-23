@@ -31,6 +31,7 @@ class bottomNav : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+
         Checkout.preload(this)
 
 

@@ -25,9 +25,9 @@ import kotlinx.android.synthetic.main.activity_song.*
  */
 class SongActivity : AppCompatActivity() , Player.EventListener {
 
-    lateinit var backButton: FloatingActionButton
-    lateinit var songView: PlayerView
-    lateinit var simpleExoPlayer: SimpleExoPlayer
+    private lateinit var backButton: FloatingActionButton
+    private lateinit var songView: PlayerView
+    private lateinit var simpleExoPlayer: SimpleExoPlayer
     private var playbackPosition = 0L
     private lateinit var videoUrl:String
     private lateinit var url : Uri
