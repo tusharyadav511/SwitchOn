@@ -19,11 +19,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".PrivacyPolicyActivity"></activity>
+        <activity android:name=".PasswordResetActivity" />
         <activity
             android:name=".SongActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_song"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".PlayMoveActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
