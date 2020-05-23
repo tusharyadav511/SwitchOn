@@ -30,4 +30,10 @@
     <string name="title_activity_song">SongActivity</string>
     <string name="reset_password">Reset your password</string>
     <string name="password_reset_text">Enter the email you used when you sign-up and we\'ll send you a link to reset your password</string>
+    <string name="password_reset_success">Success! We\'ve sent a password reset link to email address</string>
+    <string name="dash_board_text">TikTok is a video-sharing social networking service owned by ByteDance, a Chinese company founded in 2012 by Zhang Yiming. It is used to create short dance, lip-sync, comedy and talent videos.[5] ByteDance first launched Douyin (Chinese: 抖音; Dǒuyīn) for the China market in September 2016. Later, TikTok was launched in 2017 for iOS and Android in markets outside of China. It became available in the United States after merging with musical.ly on 2 August 2018. TikTok and Douyin are similar to each other, however they run on separate servers to comply with Chinese censorship restrictions. The application allows users to create short music and lip-sync videos of 3 to 15 seconds[6][7] and short looping videos of 3 to 60 seconds. The app is popular in Asia, the United States, and other parts of the world. TikTok and Douyin\'s servers are each based in the markets where the apps are available.[8]
+
+After merging with musical.ly in August, downloads rose and TikTok became the most downloaded app in the US in October 2018, the first Chinese app to achieve this.[9][10] As of 2018, it was available in over 150 markets and in 75 languages. In February 2019, TikTok, together with Douyin, hit one billion downloads globally, excluding Android installs in China.[11] In 2019, media outlets cited TikTok as the 7th-most-downloaded mobile app of the decade, from 2010 to 2019.[12] It was also the most-downloaded app on the App Store in 2018 and 2019.
+
+Since May 2020, Kevin Mayer is CEO of TikTok and COO of parent company, ByteDance. Previously he was chairman of the Walt Disney Direct-to-Consumer &amp; International. [13]</string>
 </resources>

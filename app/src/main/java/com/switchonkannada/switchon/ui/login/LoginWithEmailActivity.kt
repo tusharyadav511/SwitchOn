@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.switchonkannada.switchon.PasswordResetActivity
 
 import com.switchonkannada.switchon.R
 import com.switchonkannada.switchon.bottomNav
@@ -41,6 +42,7 @@ class LoginWithEmailActivity : AppCompatActivity() {
         val login = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
         val backButton = findViewById<FloatingActionButton>(R.id.backFloationLogOption)
+        val forgotPassword = findViewById<Button>(R.id.forgotPassowrd)
 
         backButton.setOnClickListener {
             onBackPressed()
@@ -121,6 +123,12 @@ class LoginWithEmailActivity : AppCompatActivity() {
                 loading.visibility = View.VISIBLE
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
+        }
+
+        forgotPassword.setOnClickListener {
+            val intent = Intent(this , PasswordResetActivity ::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
         }
     }
 

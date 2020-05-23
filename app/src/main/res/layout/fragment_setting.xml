@@ -23,7 +23,7 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/settingPrivacyPolicy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
@@ -38,7 +38,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/settingResetPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
@@ -53,7 +53,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/button6"
+                android:id="@+id/logoutButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"

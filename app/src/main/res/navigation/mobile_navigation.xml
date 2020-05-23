@@ -20,6 +20,6 @@
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.switchonkannada.switchon.ui.setting.SettingFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_setting"
         tools:layout="@layout/fragment_setting" />
 </navigation>
