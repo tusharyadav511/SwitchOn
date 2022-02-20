@@ -1,2 +1,2 @@
 # SwitchOn
-OTT platform to help struggling moviemakers in streaming their movie during COVID-19 lockdown.
+OTT platform to help moviemakers in streaming their movie.
